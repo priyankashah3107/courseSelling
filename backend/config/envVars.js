@@ -6,4 +6,5 @@ export const env_Vars = {
   PORT: process.env.PORT,
   MONGO_URL: process.env.MONGO_URL,
   SECRET_TOKEN: process.env.SECRET_TOKEN,
+  NODE_ENV: process.env.NODE_ENV,
 };
