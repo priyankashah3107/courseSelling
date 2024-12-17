@@ -9,7 +9,7 @@ const courseSchema = mongoose.Schema(
     },
     image: {
       type: String,
-      unique: true,
+      // unique: true,
       required: true,
     },
     description: {

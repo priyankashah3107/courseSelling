@@ -2,76 +2,72 @@ import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import { Course } from "../models/course.model.js";
 import Category from "../models/categories.model.js";
-
+// finding solution for creator and category category problem solve ,
+// finding creator solution
 export const createCourses = async (req, res) => {
-  // steps we need to check
-  // 1. input validation
-  // 2. validate mongoDB ObjectIds for category and creator
-  // 3. check category for existingCategory or existingCreator
-  // Step 5: Check for Duplicate Course Title
-  // Step 6: Create and Save the Course
-  // Step 7: Success Response
   try {
-    const { title, image, description, category, creator, price } = req.body;
-    if (!title || !image || !description || !creator || !category || !price) {
+    const { title, image, description, price, category } = req.body;
+    if (!title || !image || !description || !price) {
       return res
         .status(400)
-        .json({ success: false, message: "All fields  are required" });
+        .json({ success: false, message: "All Feilds are Required" });
     }
 
-    if (!mongoose.isValidObjectId(creator)) {
+    // cheking is title is already exist
+
+    const isTitleExist = await Course.findOne({ title });
+
+    if (isTitleExist) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid Creator Id" });
+        .json({ success: false, message: "Title Already Exist" });
     }
 
-    if (!mongoose.isValidObjectId(category)) {
+    const categoryData = await Category.findOne({ title: category });
+
+    if (!categoryData) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found. Please use a valid category title.",
+      });
+    }
+
+    const creatorData = req.user;
+
+    if (!creatorData) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid CategroyId" });
+        .json({ success: false, json: "Unable to find the Creator" });
     }
 
-    const isCreatorExist = await User.findById(creator);
-
-    if (!isCreatorExist) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Creator not Exist" });
-    }
-
-    const isCategoryExist = await Category.findById(category);
-
-    if (!isCategoryExist) {
+    if (price <= 0 || price >= 5000) {
       return res
         .status(400)
-        .json({ success: false, message: "Category not Exist" });
+        .json({ message: "Price should be greater than 0 and less 5000" });
     }
 
-    // check duplicate value
-
-    const duplicateTitle = await Course.findOne({ title });
-
-    if (duplicateTitle) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Title Alreday Exist" });
+    if (description.length === 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Description length must be at least 10 characters",
+      });
     }
 
-    const newCourses = new Course({
+    const newCourse = new Course({
       title,
       image,
       description,
-      category,
-      creator,
       price,
+      category: categoryData._id,
+      creator: creatorData._id,
     });
 
-    const savedCourse = await newCourses.save();
+    await newCourse.save();
 
     return res.status(201).json({
       success: true,
-      message: "Course created successfully",
-      course: savedCourse,
+      message: "Courses Created Successfully",
+      course: newCourse,
     });
   } catch (error) {
     console.log("Error in Create Routes controllers", error);
@@ -82,6 +78,8 @@ export const createCourses = async (req, res) => {
 };
 
 export const updateCourseById = async (req, res) => {
+  const { id } = req.params;
+
   try {
   } catch (error) {}
 };
@@ -93,7 +91,14 @@ export const deleteCourseById = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
-  } catch (error) {}
+    const getcourses = await Course.find();
+    return res.status(200).json({ success: true, content: getcourses });
+  } catch (error) {
+    console.log("Error in  getAllCourses Routes controllers", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
 };
 
 export const getCourseById = async (req, res) => {

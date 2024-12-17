@@ -10,10 +10,11 @@ import {
 
 const router = Router();
 
-router.post("/mycourses", protectRoute, createCourses); // Create a course
-router.patch("/courses/:id", protectRoute, updateCourseById); // Update course by ID
-router.delete("/courses/:id", protectRoute, deleteCourseById); // Delete course by ID
-router.get("/courses", getAllCourses); // Get all courses (public route)
+router.post("/mycourses", createCourses); // Create a course
+router.get("/getcourses", getAllCourses); // Get all courses (public route)
+router.patch("/courses/:id", updateCourseById); // Update course by ID
+router.delete("/courses/:id", deleteCourseById); // Delete course by ID
+
 router.get("/courses/:id", getCourseById); // Get course details by ID (public route)
 
 export default router;
