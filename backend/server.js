@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import courseRoutes from "../backend/routes/courses.routes.js";
 import { protectRoute } from "./middlewars/protectRoute.js";
 import categoryRoutes from "../backend/routes/categories.routes.js";
+import { getCourseById } from "./controllers/course.controllers.js";
 const app = express();
 
 const PORT = env_Vars.PORT;
