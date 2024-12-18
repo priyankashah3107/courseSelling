@@ -146,108 +146,59 @@ export const updateCourseById = async (req, res) => {
   }
 };
 
-// export const deleteCourseById = async (req, res) => {
-//   const { id } = req.params;
-//   const userId = req.user._id; // Ensure this comes from authentication middleware
-
-//   console.log("Id for deleting the course:", id);
-//   console.log("UserId in DeleteCourseById", userId);
-//   try {
-//     // Validate course ID
-
-//     if (!mongoose.Types.ObjectId.isValid(id)) {
-//       return res
-//         .status(400)
-//         .json({ success: true, message: "Invalid Course Id" });
-//     }
-//     // Find the course by ID
-//     const course = await Course.findById(id);
-//     // Deleting data without validating the ID first is a waste of resources.
-//     // Using database calls to check invalid or malformed IDs increases unnecessary load on the database.
-//     // Example: The check below will fail if 'course' is null, leading to runtime errors.
-//     // Avoid accessing 'course._id' directly when 'course' might be null. that's why above approch is best
-//     // if (!course._id) {
-//     //   return res
-//     //     .status(400)
-//     //     .json({ success: false, message: "Invalid Course id" });
-//     // }
-
-//     if (!course) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Course not found. Please provide a valid course ID.",
-//       });
-//     }
-
-//     if (course.creator.toString() !== userId.toString()) {
-//       return res.status(403).json({
-//         success: false,
-//         message: "You are not authorized to delete this course.",
-//       });
-//     }
-
-//     const deletedCourse = await Course.findByIdAndDelete(id);
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Course deleted successfully.",
-//       content: deletedCourse,
-//     });
-//   } catch (error) {
-//     console.log("Error in deleteCourseById controller:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error.",
-//     });
-//   }
-// };
-
 export const deleteCourseById = async (req, res) => {
   const { id } = req.params;
-  const userId = req.user._id;
-  console.log("Delete id", id);
-  console.log("User id", userId);
+  const userId = req.user._id; // Ensure this comes from authentication middleware
+
+  console.log("Id for deleting the course:", id);
+  console.log("UserId in DeleteCourseById", userId);
   try {
-    // validate the id is exist in the Course Schema or not
-    // 2. check is course exist in the db or not
-    // only owner have access to delete the particular course
+    // Validate course ID
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
-        .status(404)
-        .json({ success: false, message: "Invalid Course Id" });
+        .status(400)
+        .json({ success: true, message: "Invalid Course Id" });
     }
+    // Find the course by ID
     const course = await Course.findById(id);
+    // Deleting data without validating the ID first is a waste of resources.
+    // Using database calls to check invalid or malformed IDs increases unnecessary load on the database.
+    // Example: The check below will fail if 'course' is null, leading to runtime errors.
+    // Avoid accessing 'course._id' directly when 'course' might be null. that's why above approch is best
+    // if (!course._id) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Invalid Course id" });
+    // }
 
     if (!course) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Course not exist" });
+      return res.status(404).json({
+        success: false,
+        message: "Course not found. Please provide a valid course ID.",
+      });
     }
 
     if (course.creator.toString() !== userId.toString()) {
       return res.status(403).json({
         success: false,
-        message: "You are not a authorized user to delete this course",
+        message: "You are not authorized to delete this course.",
       });
     }
 
-    const deleteCourse = await Course.findByIdAndDelete(id);
+    const deletedCourse = await Course.findByIdAndDelete(id);
 
-    if (!deleteCourse) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Course not found." });
-    }
     return res.status(200).json({
       success: true,
-      message: "Successfully Delete the course",
-      content: deleteCourse,
+      message: "Course deleted successfully.",
+      content: deletedCourse,
     });
   } catch (error) {
-    console.log("Error in  DeleteCoursesById Routes controllers", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
+    console.log("Error in deleteCourseById controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error.",
+    });
   }
 };
 
@@ -333,6 +284,7 @@ export const getAllCourses = async (req, res) => {
 //   }
 // };
 
+// making normal function for courseId call because this will use in many places
 export const getCourseById = async (id) => {
   try {
     const getParticularCourseId = await Course.findById(id);

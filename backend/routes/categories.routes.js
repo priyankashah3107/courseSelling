@@ -4,14 +4,16 @@ import {
   categoryRoutes,
   categoryUpdateById,
   deleteCategoryById,
+  getCategoryById,
   getCategoryRoutes,
 } from "../controllers/categories.controllers.js";
 
 const router = Router();
 
-router.post("/mycategories", categoryRoutes); // Create a category
-router.get("/getcategories", getCategoryRoutes); // Fetch all categories
-router.patch("/categories/:id", categoryUpdateById); // Update category by ID
-router.delete("/categories/:id", deleteCategoryById); // Delete category by ID
+router.post("/mycategories", categoryRoutes);
+router.get("/getcategories", getCategoryRoutes);
+router.patch("/updatecategory/:id", categoryUpdateById);
+router.delete("/deletecategory/:id", deleteCategoryById);
+router.get("/getcategories/:id", getCategoryById);
 
 export default router;
