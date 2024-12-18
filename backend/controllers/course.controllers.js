@@ -77,68 +77,6 @@ export const createCourses = async (req, res) => {
   }
 };
 
-// export const updateCourseById = async (req, res) => {
-//   const { id } = req.params;
-//   const { title, image, description, price, category } = req.body;
-//   const userId = req.user._id;
-
-//   try {
-//     if (!title || !image || !description || !price || !category) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "All fields are required" });
-//     }
-
-//     const course = await Course.findById(id);
-//     if (!course) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Course not found",
-//       });
-//     }
-
-//    // cheking course creator is belongs to the userID
-//     if (course.creator.toString() !== userId.toString()) {
-//       return res.status(403).json({
-//         success: false,
-//         message: "You are not authorized to update this course",
-//       });
-//     }
-
-//     // Validate and fetch category if necessary
-//     let categoryId = category;
-//     if (!mongoose.Types.ObjectId.isValid(category)) {
-//       const categoryData = await Category.findOne({ title: category });
-//       if (!categoryData) {
-//         return res.status(404).json({
-//           success: false,
-//           message: "Category not found. Please use a valid category title.",
-//         });
-//       }
-//       categoryId = categoryData._id; // Assign the category ObjectId
-//     }
-
-//     // Update the course
-//     const updatedCourse = await Course.findByIdAndUpdate(
-//       id,
-//       { title, image, description, price, category: categoryId },
-//       { new: true, runValidators: true }
-//     );
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Course updated successfully",
-//       content: updatedCourse,
-//     });
-//   } catch (error) {
-//     console.log("Error in updateCourseById controller:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error",
-//     });
-//   }
-// };
-
 export const updateCourseById = async (req, res) => {
   const { id } = req.params;
   const { title, image, description, price, category } = req.body;
@@ -208,9 +146,109 @@ export const updateCourseById = async (req, res) => {
   }
 };
 
+// export const deleteCourseById = async (req, res) => {
+//   const { id } = req.params;
+//   const userId = req.user._id; // Ensure this comes from authentication middleware
+
+//   console.log("Id for deleting the course:", id);
+//   console.log("UserId in DeleteCourseById", userId);
+//   try {
+//     // Validate course ID
+
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res
+//         .status(400)
+//         .json({ success: true, message: "Invalid Course Id" });
+//     }
+//     // Find the course by ID
+//     const course = await Course.findById(id);
+//     // Deleting data without validating the ID first is a waste of resources.
+//     // Using database calls to check invalid or malformed IDs increases unnecessary load on the database.
+//     // Example: The check below will fail if 'course' is null, leading to runtime errors.
+//     // Avoid accessing 'course._id' directly when 'course' might be null. that's why above approch is best
+//     // if (!course._id) {
+//     //   return res
+//     //     .status(400)
+//     //     .json({ success: false, message: "Invalid Course id" });
+//     // }
+
+//     if (!course) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Course not found. Please provide a valid course ID.",
+//       });
+//     }
+
+//     if (course.creator.toString() !== userId.toString()) {
+//       return res.status(403).json({
+//         success: false,
+//         message: "You are not authorized to delete this course.",
+//       });
+//     }
+
+//     const deletedCourse = await Course.findByIdAndDelete(id);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Course deleted successfully.",
+//       content: deletedCourse,
+//     });
+//   } catch (error) {
+//     console.log("Error in deleteCourseById controller:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error.",
+//     });
+//   }
+// };
+
 export const deleteCourseById = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user._id;
+  console.log("Delete id", id);
+  console.log("User id", userId);
   try {
-  } catch (error) {}
+    // validate the id is exist in the Course Schema or not
+    // 2. check is course exist in the db or not
+    // only owner have access to delete the particular course
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Invalid Course Id" });
+    }
+    const course = await Course.findById(id);
+
+    if (!course) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Course not exist" });
+    }
+
+    if (course.creator.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not a authorized user to delete this course",
+      });
+    }
+
+    const deleteCourse = await Course.findByIdAndDelete(id);
+
+    if (!deleteCourse) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Course not found." });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Successfully Delete the course",
+      content: deleteCourse,
+    });
+  } catch (error) {
+    console.log("Error in  DeleteCoursesById Routes controllers", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
 };
 
 export const getAllCourses = async (req, res) => {
