@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 
-const userSchema = mongoose.Schema(
+const adminSchema = mongoose.Schema(
   {
     username: {
       type: String,
@@ -19,20 +19,16 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      unique: true,
+      required: true,
     },
     state: {
       type: String,
       required: true, // for gst bills
     },
-    phonenumber: {
-      type: Number,
-      required: true,
-    },
   },
   { timestamps: true }
 );
 
-const User = model("User", userSchema);
+const Admin = model("Admin", adminSchema);
 export default User;

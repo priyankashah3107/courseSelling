@@ -148,3 +148,13 @@ export const getLoginUser = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
+
+export const purchaseCourse = async (req, res) => {
+  try {
+  } catch (error) {}
+};
+
+export const getPurchaseCourse = async (req, res) => {
+  try {
+  } catch (error) {}
+};

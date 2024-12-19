@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* 
+@keyframes subtleMove {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  50% {
+    background-position: 35px 35px, -35px -35px;
+  }
+  100% {
+    background-position: 0 0, 0 0;
+  }
+} */
+
+@keyframes pulseGrid {
+  0%,
+  100% {
+    background-color: #141414;
+    background-image: linear-gradient(rgba(0, 0, 95, 1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 95, 1) 1px, transparent 1px);
+  }
+  50% {
+    background-color: #181818;
+    background-image: linear-gradient(rgba(0, 0, 95, 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 95, 0.5) 1px, transparent 1px);
+  }
+}
+
+@keyframes rotateGrid {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.body {
+  color: #f3f3f3;
+  background-color: #020008;
+  background-image: linear-gradient(rgb(0, 107, 105) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0, 107, 105) 1px, transparent 1px);
+  background-size: 70px 70px;
+  animation: subtleMove 8s ease-in-out infinite;
+  /* animation: pulseGrid 6s ease-in-out infinite; */
+  /* animation: pulseGrid 6s ease-in-out infinite, rotateGrid 30s linear infinite; */
+  min-height: 100vh;
+}
