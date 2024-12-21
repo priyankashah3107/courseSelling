@@ -2,8 +2,10 @@ import mongoose, { get } from "mongoose";
 import User from "../models/user.model.js";
 import { Course } from "../models/course.model.js";
 import Category from "../models/categories.model.js";
+import Purchase from "../models/purchase.model.js";
 // finding solution for creator and category category problem solve ,
 // finding creator solution
+// only admin is own this endpoints
 export const createCourses = async (req, res) => {
   try {
     const { title, image, description, price, category } = req.body;
@@ -32,6 +34,7 @@ export const createCourses = async (req, res) => {
       });
     }
 
+    // creator of the course
     const creatorData = req.user; // This value is coming from middleware which is protectRoute
 
     if (!creatorData) {
@@ -325,33 +328,34 @@ export const getAllCourses = async (req, res) => {
 //   }
 // };
 
-// export const getCourseById = async (req, res) => {
-//   const { id } = req.params;
-//   console.log(id);
-//   try {
-//     const getParticulatCourseId = await Course.findById(id);
-//     return res
-//       .status(200)
-//       .json({ success: true, content: getParticulatCourseId });
-//   } catch (error) {
-//     console.log("Error in getCourseById ", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error",
-//     });
-//   }
-// };
-
-// making normal function for courseId call because this will use in many places
-export const getCourseById = async (id) => {
+export const getCourseById = async (req, res) => {
+  // task:
+  const { id } = req.params;
+  console.log(id);
   try {
-    const getParticularCourseId = await Course.findById(id);
-    console.log("ParticularCourseId of the User", getParticularCourseId);
-    if (!getParticularCourseId) {
-      throw new Error("Unable to find the Id");
-    }
-    return getParticularCourseId;
+    const getParticulatCourseId = await Course.findById(id);
+    return res
+      .status(200)
+      .json({ success: true, content: getParticulatCourseId });
   } catch (error) {
-    console.log("Error in GetCourseById", error);
+    console.log("Error in getCourseById ", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
+
+// making normal function for courseId call because this will use in many places
+// export const getCourseById = async (id) => {
+//   try {
+//     const getParticularCourseId = await Course.findById(id);
+//     console.log("ParticularCourseId of the User", getParticularCourseId);
+//     if (!getParticularCourseId) {
+//       throw new Error("Unable to find the Id");
+//     }
+//     return getParticularCourseId;
+//   } catch (error) {
+//     console.log("Error in GetCourseById", error);
+//   }
+// };

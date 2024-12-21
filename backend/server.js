@@ -9,6 +9,7 @@ import courseRoutes from "../backend/routes/courses.routes.js";
 import { protectRoute } from "./middlewars/protectRoute.js";
 import categoryRoutes from "../backend/routes/categories.routes.js";
 import { getCourseById } from "./controllers/course.controllers.js";
+import purchaseRoutes from "../backend/routes/purchase.routes.js";
 const app = express();
 
 const PORT = env_Vars.PORT;
@@ -19,6 +20,8 @@ app.use(cookieParser());
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/courses", protectRoute, courseRoutes);
 app.use("/api/v1/categories", protectRoute, categoryRoutes);
+app.use("/api/v1/purchased", protectRoute, purchaseRoutes);
+
 app.listen(PORT, () => {
   console.log(`App is Running on http://localhost:${PORT}`);
   connectToMongoDbUrl();
