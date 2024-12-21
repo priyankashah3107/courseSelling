@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const courseSchema = mongoose.Schema(
+const courseSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -22,14 +22,30 @@ const courseSchema = mongoose.Schema(
       ref: "Category",
     },
 
-    creator: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+    creator: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // intially ref is User yaha creator admin hoga
+      },
+    ],
     price: {
       type: Number,
       required: true,
     },
+    // one course can purchased by multipleUser
+    // purchasedUser: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "User",
+    //   },
+    // ],
+
+    purchasedList: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Purchase", // Reference to the Purchase collection
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -14,7 +14,6 @@ const userSchema = mongoose.Schema(
     },
     password: {
       type: String,
-
       required: true,
     },
     role: {
@@ -22,15 +21,32 @@ const userSchema = mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-    state: {
-      type: String,
-      required: true, // for gst bills
-    },
-    phonenumber: {
-      type: Number,
-      required: true,
-    },
+    // state: {
+    //   type: String,
+    //   required: true, // for gst bills
+    // },
+    // phonenumber: {
+    //   type: String, // making string because only string can not be handle special characters such as +91
+    //   required: true,
+    // },
+    // one user can have multiple purchases
+
+    purchasedCourses: [
+      // many to many relationship between user and courses
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Purchase",
+      },
+    ],
+
+    // purchasedList: [
+    //   {
+    //     type: mongoose.Types.ObjectId,
+    //     ref: "Course"
+    //   }
+    // ]
   },
+
   { timestamps: true }
 );
 
