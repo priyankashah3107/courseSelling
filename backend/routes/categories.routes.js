@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protectRoute } from "../middlewars/protectRoute.js";
+
 import {
   categoryRoutes,
   categoryUpdateById,

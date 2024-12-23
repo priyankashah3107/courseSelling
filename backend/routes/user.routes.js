@@ -7,7 +7,9 @@ import {
   purchaseCourse,
   signup,
 } from "../controllers/user.controllers.js";
-import { protectRoute } from "../middlewars/protectRoute.js";
+
+import { env_Vars } from "../config/envVars.js";
+import { protectRoute_SECRET_TOKEN } from "../middlewars/protectRoute.js";
 
 const router = Router();
 
@@ -15,10 +17,26 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
 //
-router.post("/purchase", protectRoute, purchaseCourse);
-router.get("/getpurchase", protectRoute, getPurchaseCourse);
-router.get("/purchased/:userID/:courseId", protectRoute, getPurchaseCourse);
+router.post(
+  "/purchase",
+  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  purchaseCourse
+);
+router.get(
+  "/getpurchase",
+  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  getPurchaseCourse
+);
+router.get(
+  "/purchased/:userID/:courseId",
+  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  getPurchaseCourse
+);
 
-router.get("/me", protectRoute, getLoginUser);
+router.get(
+  "/me",
+  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  getLoginUser
+);
 
 export default router;

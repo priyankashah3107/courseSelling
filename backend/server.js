@@ -6,11 +6,11 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import courseRoutes from "../backend/routes/courses.routes.js";
-import { protectRoute } from "./middlewars/protectRoute.js";
 import categoryRoutes from "../backend/routes/categories.routes.js";
 import { getCourseById } from "./controllers/course.controllers.js";
 import purchaseRoutes from "../backend/routes/purchase.routes.js";
 import adminRoutes from "../backend/routes/admin.routes.js";
+import { protectRoute_SECRET_TOKEN } from "./middlewars/protectRoute.js";
 const app = express();
 
 const PORT = env_Vars.PORT;
@@ -19,9 +19,21 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/courses", protectRoute, courseRoutes);
-app.use("/api/v1/categories", protectRoute, categoryRoutes);
-app.use("/api/v1/purchased", protectRoute, purchaseRoutes);
+app.use(
+  "/api/v1/courses",
+  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  courseRoutes
+);
+app.use(
+  "/api/v1/categories",
+  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  categoryRoutes
+);
+app.use(
+  "/api/v1/purchased",
+  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  purchaseRoutes
+);
 app.use("/api/v1/admin", adminRoutes);
 
 app.listen(PORT, () => {
