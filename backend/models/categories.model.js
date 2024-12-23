@@ -13,6 +13,7 @@ const categoriesSchema = new mongoose.Schema(
         "Web Designing",
         "Web3",
         "Artificial Intelligence",
+        "Data Structure and Algorithms",
       ], // Predefined categories
     },
     description: {

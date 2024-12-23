@@ -1,9 +1,13 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-import { generateTokenAndCookie } from "../utils/generateTokenAndSetCookie.js";
+import { wrapperofGenrateTokenAndCookie } from "../utils/generateTokenAndSetCookie.js";
 import { Course } from "../models/course.model.js";
 import Purchase from "../models/purchase.model.js";
+import { env_Vars } from "../config/envVars.js";
 
+const generateUserTokenAndCookie = wrapperofGenrateTokenAndCookie(
+  env_Vars.USER_SECRET_TOKEN
+);
 export const signup = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
@@ -22,20 +26,35 @@ export const signup = async (req, res) => {
         .json({ success: false, message: "Invalid Email Type" });
     }
 
-    const isUserExist = await User.findOne({ username });
-    if (isUserExist) {
+    // const isUserExist = await User.findOne({ username });
+    // if (isUserExist) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Username is Already Exist" });
+    // }
+
+    // const isEmailExist = await User.findOne({ email });
+    // if (isEmailExist) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Email is Alreday Exist" });
+    // }
+
+    // if ((await User.findOne({ username })) || (await User.findOne({ email }))) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Username or Email Already Exist" });
+    // }
+
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
+
+    if (existingUser) {
       return res
         .status(400)
-        .json({ success: false, message: "Username is Already Exist" });
+        .json({ success: false, message: "username or email already exist" });
     }
-
-    const isEmailExist = await User.findOne({ email });
-    if (isEmailExist) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email is Alreday Exist" });
-    }
-
     if (password.length < 6) {
       return res.status(400).json({
         success: false,
@@ -63,15 +82,27 @@ export const signup = async (req, res) => {
       role,
     });
 
-    if (newUser) {
-      generateTokenAndCookie(newUser._id, res);
-      await newUser.save();
+    await newUser.save();
 
-      return res.status(201).json({
-        success: true,
-        user: newUser,
-      });
-    }
+    generateUserTokenAndCookie(newUser._id, res);
+
+    return res.status(200).json({
+      success: true,
+      essage: "User created successfully",
+      user: newUser,
+    });
+
+    // if (newUser) {
+    //   // generateTokenAndCookie(newUser._id, res);
+    //   generateUserTokenAndCookie(newUser._id, res);
+
+    //   await newUser.save();
+
+    //   return res.status(201).json({
+    //     success: true,
+    //     user: newUser,
+    //   });
+    // }
   } catch (error) {
     console.log("Error in SignUp Contoller Routes", error);
     return res
@@ -106,7 +137,8 @@ export const login = async (req, res) => {
         .json({ success: false, message: "Incorrect Password" });
     }
 
-    generateTokenAndCookie(user._id, res);
+    // generateTokenAndCookie(user._id, res);
+    generateUserTokenAndCookie(user._id, res);
 
     return res
       .status(200)
@@ -155,6 +187,8 @@ export const getLoginUser = async (req, res) => {
 
 export const purchaseCourse = async (req, res) => {
   //  userID, courseId,  purchaseDate
+
+  // take userid from the middleware
   const { userID, courseId } = req.body;
   console.log("UserId from PurchaseCourse", userID);
   console.log("CourseId from PurchaseCourse", courseId);
