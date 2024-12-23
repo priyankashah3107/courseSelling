@@ -8,13 +8,24 @@
 // admin can see their create course in admin dashboard
 
 import { Router } from "express";
-import { login, logout, signin } from "../controllers/admin.controllers.js";
+import {
+  getAdminLoginUser,
+  login,
+  logout,
+  signup,
+} from "../controllers/admin.controllers.js";
+import { protectRoute_SECRET_TOKEN } from "../middlewars/protectRoute.js";
+import { env_Vars } from "../config/envVars.js";
 
 const router = Router();
 
-router.post("/signin", signin);
+router.post("/signup", signup);
 router.post("/login", login);
 router.delete("/logout", logout);
-// router.get("/me", isAdmin) // this is validate via adminProtect Route
+router.get(
+  "/me",
+  protectRoute_SECRET_TOKEN(env_Vars.ADMIN_SECRET_TOKEN),
+  getAdminLoginUser
+); // this is validate via adminProtect Route
 
 export default router;

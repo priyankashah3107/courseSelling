@@ -168,6 +168,7 @@ export const logout = async (req, res) => {
 export const getLoginUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
+    console.log("getLogiUser", user);
     if (!user) {
       return res
         .status(404)
