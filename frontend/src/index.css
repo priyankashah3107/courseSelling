@@ -41,7 +41,7 @@
   background-color: #020008;
   background-image: linear-gradient(rgb(0, 107, 105) 1px, transparent 1px),
     linear-gradient(90deg, rgb(0, 107, 105) 1px, transparent 1px);
-  background-size: 70px 70px;
+  background-size: 50px 50px;
   animation: subtleMove 8s ease-in-out infinite;
   /* animation: pulseGrid 6s ease-in-out infinite; */
   /* animation: pulseGrid 6s ease-in-out infinite, rotateGrid 30s linear infinite; */

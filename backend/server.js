@@ -10,6 +10,7 @@ import { protectRoute } from "./middlewars/protectRoute.js";
 import categoryRoutes from "../backend/routes/categories.routes.js";
 import { getCourseById } from "./controllers/course.controllers.js";
 import purchaseRoutes from "../backend/routes/purchase.routes.js";
+import adminRoutes from "../backend/routes/admin.routes.js";
 const app = express();
 
 const PORT = env_Vars.PORT;
@@ -21,6 +22,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/courses", protectRoute, courseRoutes);
 app.use("/api/v1/categories", protectRoute, categoryRoutes);
 app.use("/api/v1/purchased", protectRoute, purchaseRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 app.listen(PORT, () => {
   console.log(`App is Running on http://localhost:${PORT}`);

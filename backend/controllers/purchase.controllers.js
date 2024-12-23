@@ -68,7 +68,7 @@ export const getPurchasedCourseUserById = async (req, res) => {
   }
 };
 
-export const purchasedCourses = async (req, res) => {
+export const purchaseCourses = async (req, res) => {
   // validate the userID and courseId
   // checkUserId and courseId exist in database
   // only authenticated user can purchase the course
@@ -76,6 +76,9 @@ export const purchasedCourses = async (req, res) => {
   // purchase the course
   // save the purchase the in the db
   // success return
+
+  // take userId from the protect route
+  // this will create a problem
 
   const { userID, courseId } = req.body;
 
@@ -85,12 +88,12 @@ export const purchasedCourses = async (req, res) => {
         .status(400)
         .json({ success: false, message: "All feilds are required" });
     }
-    const isUserIdExist = await User.findById(userID);
-    if (!isUserIdExist) {
-      return res
-        .status(404)
-        .json({ success: false, message: "UserId not found" });
-    }
+    // const isUserIdExist = await User.findById(userID);
+    // if (!isUserIdExist) {
+    //   return res
+    //     .status(404)
+    //     .json({ success: false, message: "UserId not found" });
+    // }
     const isCourseIdExist = await Course.findById(courseId);
 
     if (!isCourseIdExist) {
@@ -115,13 +118,13 @@ export const purchasedCourses = async (req, res) => {
 
     // checking is user is autenticated to purchase the course
 
-    if (!req.user?.id || req.user?.id.toString() !== userID.toString()) {
-      // not authenticated or not authorized
-      return res.status(400).json({
-        success: false,
-        message: "Your are not authenticated user to purchase the course",
-      });
-    }
+    // if (!req.user?.id || req.user?.id.toString() !== userID.toString()) {
+    //   // not authenticated or not authorized
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Your are not authenticated user to purchase the course",
+    //   });
+    // }
 
     const newPurchase = new Purchase({
       userID,
@@ -131,7 +134,7 @@ export const purchasedCourses = async (req, res) => {
     await newPurchase.save();
 
     return res.status(200).json({
-      success: false,
+      success: true,
       message: "course purchase successfully",
       myPurchases: newPurchase,
     });
@@ -147,6 +150,8 @@ export const purchasedCourses = async (req, res) => {
 export const getPurchasedCoursebyUserId = async (req, res) => {
   // one user can purchase multiple course get purchaseCourse by UserId show this detail to the particular user
   // only authenticated user can see their purchased course
+
+  // TODO: use  middleware
   const { userID } = req.params;
   console.log("UserID is coming from getPurchasedCoursebyUserId", userID);
   try {
