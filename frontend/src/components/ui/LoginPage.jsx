@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Mail, Lock } from "lucide-react";
 import styles from "../../style";
 
-const LoginForm = () => {
+const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,7 +22,7 @@ const LoginForm = () => {
     <div className="bg-primary w-full h-screen p-10 ">
       <div className="w-full max-w-md mx-auto p-8 rounded-xl bg-black-gradient">
         <h2 className={`${styles.heading2} text-center mb-6`}>Welcome Back</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 ">
           <div className="relative">
             <Mail
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-dimWhite"
@@ -74,4 +74,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default LoginPage;

@@ -10,19 +10,19 @@ import {
 
 import LoginPage from "./components/ui/LoginPage.jsx";
 import SignupPage from "./components/ui/SignupPage.jsx";
+import HomePage from "./components/ui/HomePage.jsx";
 
-const router = createBrowserRouter([
-  { path: "/", element: <App /> },
-  { path: "/login", element: <LoginPage /> },
-  { path: "/signup", element: <SignupPage /> },
-]);
+// const router = createBrowserRouter([
+//   { path: "/", element: <HomePage /> },
+//   { path: "/login", element: <LoginPage /> },
+//   { path: "/signup", element: <SignupPage /> },
+// ]);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <BrowserRouter>
-    
+    <BrowserRouter>
       <App />
-    </BrowserRouter> */}
-    <RouterProvider router={router} />
+    </BrowserRouter>
+    {/* <RouterProvider router={router} /> */}
   </StrictMode>
 );
