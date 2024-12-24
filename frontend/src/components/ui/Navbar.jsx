@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   let navigate = useNavigate();
-  const signin = () => {
+  const signup = () => {
     navigate("/signup");
   };
 
@@ -21,11 +21,15 @@ const Navbar = () => {
 
         <div className="flex flex-row md:gap-8 ">
           <Button
-            value={"Signin"}
-            className={`hidden md:block`}
-            onClick={signin}
+            value={"SignUp"}
+            className={`hidden md:block text-black font-semibold md:px-[50px] md:py-[11px] md:text-base`}
+            onClick={signup}
           />
-          <Button value={"Login"} onClick={login} />
+          <Button
+            value={"Login"}
+            onClick={login}
+            className="text-black font-semibold md:px-[50px] md:py-[11px] md:text-base"
+          />
         </div>
       </nav>
     </>

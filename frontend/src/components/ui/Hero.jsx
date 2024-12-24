@@ -1,11 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import styles from "../../style";
+import Button from "./Button";
 
 function Hero() {
+  let navigate = useNavigate();
+  const allCourses = () => {
+    navigate("/allcourses");
+  };
+  const signup = () => {
+    navigate("/signup");
+  };
   return (
     <>
       <section
         id="home"
-        className={`flex md:flex-row flex- col justify-center items-center text-center relative  `}
+        className={`flex md:flex-row flex- col justify-center items-center text-center relative   `}
       >
         <div className="absolute z-[0] w-[40%] h-[35%] top-0 pink__gradient" />
         <div className="absolute z-[1] size-[80%] bottom-40 rounded-full white__gradient" />
@@ -13,7 +22,7 @@ function Hero() {
         <div
           className={`flex-1 ${styles.flexCenter} flex-col xl:px-0 sm:px-16 px-6`}
         >
-          <div className="flex flex-row items-center px-3 py-1.5  md:py-[6px] md:px-4 bg-discount-gradient rounded-[10px] mb-2 ">
+          <div className="flex flex-row items-center px-3 py-1.5  md:py-[6px] md:px-4 bg-discount-gradient rounded-[10px] mb-2 mt-10 md:mt-14 ">
             {/* <img src={discount} alt="discount" className={`size-32px`} /> */}
 
             <p className={`${styles.paragraph} justify-center items-center `}>
@@ -42,6 +51,23 @@ function Hero() {
             skills, earn valuable certifications, and unlock new career
             opportunities. Start your journey today!
           </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 md:gap-8 mt-10">
+            <Button
+              value={"Start learning"}
+              variant="default"
+              size="large"
+              className={`text-black font-semibold`}
+              onClick={signup}
+            />
+            <Button
+              value={"Explore course"}
+              variant="dark"
+              size="large"
+              onClick={allCourses}
+              className={`text-white font-semibold hover:bg-[#111111]`}
+            />
+          </div>
         </div>
       </section>
     </>
