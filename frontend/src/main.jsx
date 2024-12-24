@@ -7,8 +7,9 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { SignupPage } from "./components/ui/SignupPage.jsx";
+
 import LoginPage from "./components/ui/LoginPage.jsx";
+import SignupPage from "./components/ui/SignupPage.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },

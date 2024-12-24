@@ -25,7 +25,7 @@ const Navbar = () => {
             className={`hidden md:block`}
             onClick={signin}
           />
-          <Button value={"Login"} onClick={login} />
+          <Button value={"Login"} onClick={login} className="" />
         </div>
       </nav>
     </>
