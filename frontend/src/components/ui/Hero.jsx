@@ -10,6 +10,35 @@ function Hero() {
   const signup = () => {
     navigate("/signup");
   };
+  const cards = [
+    {
+      id: 1,
+      title: "Web Designing",
+      img: "/uiux.png",
+      description:
+        "Transforming your vision into stunning, user-friendly websites that captivate and convert. Let's build a digital experience your customers will love!",
+      creatorName: "Harkirat Singh",
+      button: <Button value={"₹ 999"} variant="pink" size="small" />,
+    },
+    {
+      id: 2,
+      title: "Web Development",
+      img: "/development.png",
+      description:
+        "Creating powerful, seamless websites that elevate your brand and engage users. Let’s turn your ideas into exceptional online experiences!",
+      creatorName: "Harkirat Singh",
+      button: <Button value={"₹ 3999"} variant="pink" size="small" />,
+    },
+    {
+      id: 3,
+      title: "Artificial Intelligence",
+      img: "/ai.png",
+      description:
+        "Harnessing the power of AI to deliver smart, efficient, and innovative solutions. Transforming data into decisions for a smarter future!",
+      creatorName: "Harkirat Singh",
+      button: <Button value={"₹ 2999"} variant="pink" size="small" />,
+    },
+  ];
   return (
     <>
       <section
