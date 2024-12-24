@@ -22,13 +22,13 @@ const Navbar = () => {
         <div className="flex flex-row md:gap-8 ">
           <Button
             value={"SignUp"}
-            className={`hidden md:block text-black font-semibold md:px-[50px] md:py-[11px] md:text-base`}
+            className={`hidden md:block text-white font-semibold md:px-[50px] md:py-[11px] md:text-base`}
             onClick={signup}
           />
           <Button
             value={"Login"}
             onClick={login}
-            className="text-black font-semibold md:px-[50px] md:py-[11px] md:text-base"
+            className="text-white font-semibold md:px-[50px] md:py-[11px] md:text-base"
           />
         </div>
       </nav>

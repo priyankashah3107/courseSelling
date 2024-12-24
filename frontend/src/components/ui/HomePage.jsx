@@ -2,6 +2,7 @@ import React from "react";
 import styles from "../../style";
 import Navbar from "./Navbar";
 import Hero from "./Hero";
+import AllCourses from "./AllCourses";
 
 const HomePage = () => {
   return (
@@ -15,6 +16,11 @@ const HomePage = () => {
       <div className={` bg-primary ${styles.flexStart}`}>
         <div className={` ${styles.boxWidth} ${styles.textWhite}`}>
           <Hero />
+        </div>
+      </div>
+      <div className={`bg-primary ${styles.paddingX} ${styles.flexStart}  `}>
+        <div className={`${styles.boxWidth} ${styles.textWhite}  mt-12  `}>
+          <AllCourses />
         </div>
       </div>
     </div>

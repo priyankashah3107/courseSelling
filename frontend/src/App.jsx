@@ -7,6 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import { Home } from "lucide-react";
 import SignupPage from "./components/ui/SignupPage";
 import LoginPage from "./components/ui/LoginPage";
+import AllCourses from "./components/ui/AllCourses";
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
         <Route path="/signup" element={<SignupPage />} />
 
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/allcourses" element={<AllCourses />} />
       </Routes>
     </div>
   );
