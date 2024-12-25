@@ -5,6 +5,7 @@ import Hero from "./Hero";
 import AllCourses from "./AllCourses";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
+import WhyChooseUs from "./WhyChooseUs";
 
 const cards = [
   {
@@ -56,19 +57,19 @@ const HomePage = () => {
         </div>
       </div>
       <div className={`bg-primary  ${styles.paddingX} ${styles.flexCenter}  `}>
-        <div className={` ${styles.textWhite}     `}>
+        <div className={` ${styles.textWhite} flex flex-col    `}>
           <Button
             value={"Courses"}
             size="large"
             variant="dark"
-            className={`font-semibold mb-14 mt-20 mx-auto `}
+            className={`font-semibold mb-14 mt-20 md:mt-32 mx-auto  `}
           />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center justify-center mx-auto gap-14 ">
             {cards.map((val, index) => (
               // later convert this in Link so i will redirect with dynamic ID
               <div
                 key={index}
-                className="max-w-72 w-[377px] h-[334px] bg-gray-gradient p-5 rounded-md"
+                className="max-w-72 w-[377px] h-[334px] bg-gray-gradient p-5 rounded-md cursor-pointer"
                 onClick={mycourse}
               >
                 <img
@@ -89,15 +90,19 @@ const HomePage = () => {
                   <h2 className="text-white text-xs font-bold font-['Poppins'] leading-tight tracking-tight">
                     {val.creatorName}
                   </h2>
-                  <button>{val.button}</button>
+                  <button className="text-black">{val.button}</button>
                 </div>
               </div>
             ))}
+           
           </div>
+          <WhyChooseUs />
         </div>
       </div>
 
-      {/* cards */}
+
+
+      
     </div>
   );
 };
