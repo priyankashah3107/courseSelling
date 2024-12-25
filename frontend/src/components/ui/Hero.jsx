@@ -51,7 +51,7 @@ function Hero() {
         <div
           className={`flex-1 ${styles.flexCenter} flex-col xl:px-0 sm:px-16 px-6`}
         >
-          <div className="flex flex-row items-center px-3 py-1.5  md:py-[6px] md:px-4 bg-discount-gradient rounded-[10px] mb-2 mt-10 md:mt-14 ">
+          <div className="flex flex-row items-center px-3 py-1.5  md:py-[6px] md:px-4 bg-discount-gradient rounded-[10px] mb-2 mt-10 md:mt-14  ">
             {/* <img src={discount} alt="discount" className={`size-32px`} /> */}
 
             <p className={`${styles.paragraph} justify-center items-center `}>
@@ -62,7 +62,7 @@ function Hero() {
             </p>
           </div>
 
-          <div className="flex flex-row justify-between items-center w-full">
+          <div className="flex flex-row justify-between items-center w-full onScroll">
             <h1 className="flex-1 font-poppins font-semibold text-[24px] ss:text-[72px] md:text-[54px]  ss:leading-[100px] leading-75px mt-4 md:mt-6">
               Your Path to <span className="text-gradient">Career Growth</span>
               <br className="sm:block hidden" />{" "}

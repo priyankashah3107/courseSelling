@@ -59,7 +59,7 @@ const WhyChooseUs = () => {
             style={{
                 boxShadow: '0 2px 2px rgba(222, 249, 250, 0.5), 0 8px 25px rgba(190, 243, 245, 0.4), 0 12px 35px rgba(51, 187, 207, 0.3)',
               }}
-            className='max-w-5xl sm:w-auto  w-full grid grid-rows-1 p-10 sm:px-[92px] sm:py-[29px]  border border-[#191a23] bg-gradient-to-br from-[#272727] to-[#100f1c] rounded-[25px] mt-10'
+            className='max-w-5xl sm:w-auto  w-full grid grid-rows-1 p-10 sm:px-[92px] sm:py-[29px]  border border-[#191a23] bg-gradient-to-br from-[#272727] to-[#100f1c] rounded-[25px] mt-10 autoShow'
              > 
              <div className='flex flex-row justify-between items-center '>
 
@@ -68,7 +68,7 @@ const WhyChooseUs = () => {
             <h3 className='text-white text-lg sm:text-3xl font-medium'>{val.title}</h3>
             </div>
             {/* <Plus />  */}
-            <div onClick={() => handleOpen(val.id)}>
+            <div onClick={() => handleOpen(val.id)} className='cursor-pointer'>
                 {isOpen[val.id] ?  <Minus className='sm:size-9' /> : <Plus  className=' sm:size-9'/>}
             </div>
             
@@ -81,6 +81,8 @@ const WhyChooseUs = () => {
 
 
             </div> 
+
+           
         ))}
       
     </div>

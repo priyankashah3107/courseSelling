@@ -152,3 +152,71 @@
   animation: moving-border 3s linear infinite;
   z-index: -1;
 }
+
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.onScroll {
+  animation: appear 1s ease-out forwards; /* Add timing and duration */
+}
+
+
+/* 
+ right to left animation  */
+.case-slide {
+  animation: scroll 6s linear infinite;
+}
+
+/* .name-slide {
+  animation: scroll 7s linear infinite;
+} */
+
+@keyframes scroll {
+  from{
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* left to right moving card */
+
+.case-slide-reverse {
+  animation:  horizontal-slide 6s linear infinite;
+}
+
+@keyframes horizontal-slide {
+  from {
+    transform: translate(-100%);
+  }
+  to{
+    transform: translate(0%);
+  }
+}
+
+.autoShow{
+  animation: autoShowAnimation both;
+  animation-timeline: view(70% 5%);
+}
+
+@keyframes autoShowAnimation{
+
+  from{
+    opacity: 0;
+    transform: translateY(200px) scale(0.3);
+  } 
+  to{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
