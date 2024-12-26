@@ -19,9 +19,14 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRoutes);
+// app.use(
+//   "/api/v1/courses",
+//   protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+//   courseRoutes
+// );
 app.use(
   "/api/v1/courses",
-  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+
   courseRoutes
 );
 app.use(
