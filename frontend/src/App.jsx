@@ -8,6 +8,7 @@ import { Home } from "lucide-react";
 import SignupPage from "./components/ui/SignupPage";
 import LoginPage from "./components/ui/LoginPage";
 import AllCourses from "./components/ui/AllCourses";
+import BuyNow from "./components/ui/BuyNow";
 
 const App = () => {
   return (
@@ -25,13 +26,15 @@ const App = () => {
     //   </div>
     // </div>
 
-    <div >
+    <div>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignupPage />} />
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/allcourses" element={<AllCourses />} />
+        <Route path="/buynow" element={<BuyNow />} />
+        {/* viewDetails */}
       </Routes>
     </div>
   );
