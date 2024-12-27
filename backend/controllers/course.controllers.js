@@ -36,7 +36,7 @@ export const createCourses = async (req, res) => {
 
     // creator of the course
     const creatorData = req.user; // This value is coming from middleware which is protectRoute
-
+    console.log("CreatorData from CreateCourses", creatorData.username);
     if (!creatorData) {
       return res
         .status(400)
@@ -63,6 +63,7 @@ export const createCourses = async (req, res) => {
       price,
       category: categoryData._id,
       creator: creatorData._id,
+      username: creatorData.username,
     });
 
     await newCourse.save();
@@ -266,6 +267,7 @@ export const deleteCourseById = async (req, res) => {
 export const getAllCourses = async (req, res) => {
   try {
     const getcourses = await Course.find();
+
     return res.status(200).json({ success: true, content: getcourses });
   } catch (error) {
     console.log("Error in  getAllCourses Routes controllers", error);
