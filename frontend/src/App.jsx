@@ -11,6 +11,7 @@ import AllCourses from "./components/ui/AllCourses";
 import BuyNow from "./components/ui/BuyNow";
 import MyPurchases from "./components/ui/MyPurchases";
 import SubContent from "./components/ui/SubContent";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/buynow" element={<BuyNow />} />
         {/* viewDetails */}
       </Routes>
+      <Toaster />
     </div>
   );
 };
