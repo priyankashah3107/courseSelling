@@ -164,7 +164,7 @@ const HomePage = () => {
     navigate("/allcourses");
   };
 
-  useEffect(() => {
+  useEffect(() => {  
     observer.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -233,7 +233,7 @@ const HomePage = () => {
                   <h2 className="text-white text-xs font-bold font-['Poppins'] leading-tight tracking-tight">
                     {val.creatorName}
                   </h2>
-                  <button className="text-black">{val.button}</button>
+                  <div className="text-black">{val.button}</div>
                 </div>
               </div>
             ))}
