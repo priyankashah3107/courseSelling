@@ -14,7 +14,12 @@ import { protectRoute_SECRET_TOKEN } from "./middlewars/protectRoute.js";
 const app = express();
 
 const PORT = env_Vars.PORT;
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Frontend URL
+  credentials: true, // Allows cookies to be sent and received
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
