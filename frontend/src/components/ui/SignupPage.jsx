@@ -28,7 +28,7 @@ const SignupPage = () => {
 				console.log("Data from the SignupPage", res);
 				return res.data;
 			} catch (error) {
-				console.log("Error on creating the Username", error);
+				console.log("Error on creating the Profile", error);
 				throw error;
 			}
 		},

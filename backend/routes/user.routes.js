@@ -16,7 +16,11 @@ const router = Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
-//
+router.get(
+  "/me",
+  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  getLoginUser
+);
 router.post(
   "/purchase",
   protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
@@ -33,10 +37,6 @@ router.get(
   getPurchaseCourse
 );
 
-router.get(
-  "/me",
-  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
-  getLoginUser
-);
+
 
 export default router;

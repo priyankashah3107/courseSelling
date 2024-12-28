@@ -145,7 +145,7 @@ const AllCourses = () => {
             value="Available Courses"
             variant="dark"
             size="large"
-            className="font-bold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-[#26D0CE] to-[#1A2980]"
+            className="font-bold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-[#26D0CE] to-[#1A2980] "
           />
           {!loading && data?.content?.length > 0 && (
             <p className="mt-4 text-gray-400">

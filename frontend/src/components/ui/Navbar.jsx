@@ -16,7 +16,7 @@ const Navbar = () => {
     <>
       <nav className="flex flex-row justify-between mx-auto p-6  max-w-5xl relative z-10 mb-10">
         <h1 className="text-white/80 text-sm  md:text-xl font-bold font-['Poppins'] leading-relaxed">
-          Teach <span className="text-gradient">Point</span>
+          Tech <span className="text-gradient">Point</span>
         </h1>
 
         <div className="flex flex-row md:gap-8 ">
