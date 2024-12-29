@@ -48,6 +48,7 @@ export function protectRoute_SECRET_TOKEN(Secret_Token) {
       }
       // decode the tokenQ
 
+
       let decode = jwt.verify(token, Secret_Token);
       console.log("Decode", decode)
       const user =
@@ -60,7 +61,7 @@ export function protectRoute_SECRET_TOKEN(Secret_Token) {
           .json({ success: false, message: "User Not Found" });
       }
       req.user = user;
-      console.log("User info from Protected Route", user);
+      console.log("User info from Protected Route", user); 
       next();
     } catch (error) {
       console.log("Error in ProtectRoute", error);

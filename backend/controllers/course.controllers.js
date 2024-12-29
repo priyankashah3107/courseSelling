@@ -6,6 +6,83 @@ import Purchase from "../models/purchase.model.js";
 // finding solution for creator and category category problem solve ,
 // finding creator solution
 // only admin is own this endpoints
+// export const createCourses = async (req, res) => {
+//   try {
+//     const { title, image, description, price, category } = req.body;
+//     if (!title || !image || !description || !price) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "All Feilds are Required" });
+//     }
+
+//     // cheking is title is already exist
+
+//     const isTitleExist = await Course.findOne({ title });
+
+//     if (isTitleExist) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Title Already Exist" });
+//     }
+
+//     const categoryData = await Category.findOne({ title: category });
+
+//     if (!categoryData) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Category not found. Please use a valid category title.",
+//       });
+//     }
+
+//     // creator of the course
+//     const creatorData = req.user; // This value is coming from middleware which is protectRoute
+//     console.log("CreatorData from CreateCourses", creatorData.username);
+//     if (!creatorData) {
+//       return res
+//         .status(400)
+//         .json({ success: false, json: "Unable to find the Creator" });
+//     }
+
+//     if (price <= 0 || price >= 5000) {
+//       return res
+//         .status(400)
+//         .json({ message: "Price should be greater than 0 and less 5000" });
+//     }
+
+//     if (description.length === 10) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Description length must be at least 10 characters",
+//       });
+//     }
+
+//     const newCourse = new Course({
+//       title,
+//       image,
+//       description,
+//       price,
+//       category: categoryData._id,
+//       creator: creatorData._id,
+//       // username: creatorData.username, // unable to get username
+//     });
+
+//     await newCourse.save();
+
+//     return res.status(201).json({
+//       success: true,
+//       message: "Courses Created Successfully",
+//       course: newCourse,
+//     });
+//   } catch (error) {
+//     console.log("Error in Create Routes controllers", error);
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Internal Server Error" });
+//   }
+// };
+
+
+
 export const createCourses = async (req, res) => {
   try {
     const { title, image, description, price, category } = req.body;
@@ -32,6 +109,12 @@ export const createCourses = async (req, res) => {
         success: false,
         message: "Category not found. Please use a valid category title.",
       });
+    }
+
+    const purchased = await Purchase.find()
+
+    if(!purchased) {
+      return res.status(404).json({success: false, message: "Unable to find the Purchases Course"})
     }
 
     // creator of the course
@@ -63,7 +146,8 @@ export const createCourses = async (req, res) => {
       price,
       category: categoryData._id,
       creator: creatorData._id,
-      username: creatorData.username,
+      purchasedList: purchased
+      // username: creatorData.username, // unable to get username
     });
 
     await newCourse.save();
@@ -80,6 +164,70 @@ export const createCourses = async (req, res) => {
       .json({ success: false, message: "Internal Server Error" });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const updateCourseById = async (req, res) => {
   const { id } = req.params;

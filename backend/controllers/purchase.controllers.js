@@ -203,47 +203,98 @@ export const purchaseCourses = async (req, res) => {
 // };
 
 
+
+
+
 export const getPurchasedCoursebyUserId = async (req, res) => {
-  // Middleware should attach the user object to req
-  const userId = req.user?._id; // Safely access req.user.id
-
-  console.log("UserID from getPurchasedCoursebyUserId:", userId);
-  console.log("mbnkfajfha kfhafa", req.user)
-
   try {
+    const userId = req?.user?._id;
+
     if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: "User is not authenticated.",
-      });
+      return res.status(401).json({ success: false, message: "UNAUTHORIZED USER" });
     }
 
-    // Fetch purchases by userId and populate course details
-    const purchases = await Purchase.find({ userId })
-      .populate("courseId", "title") // Populating course details (title only)
+    // Fetch purchases directly from the Purchase model
+    const userPurchasedList = await Purchase.find({ userID: userId })
+      .populate({
+        path: "courseId", // Populate the course details
+        select: "title price description image", // Only select required fields
+      })
       .exec();
 
-    if (!purchases || purchases.length === 0) {
+    if (!userPurchasedList || userPurchasedList.length === 0) {
       return res.status(404).json({
         success: false,
         message: "No purchased courses found for this user.",
       });
     }
 
-    // Respond with purchases
     return res.status(200).json({
       success: true,
-      message: "Purchased courses fetched successfully.",
-      purchasedCourses: purchases,
+      message: "Purchased courses retrieved successfully.",
+      userPurchasedList, // Return the list of purchases
     });
   } catch (error) {
-    console.error("Error in getPurchasedCoursebyUserId:", error);
+    console.error("Error retrieving purchased courses:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error. Please try again later.",
+      message: "An error occurred while retrieving purchased courses.",
     });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const getPurchasedCoursebyCourseId = async (req, res) => {
   const { courseId } = req.params;
