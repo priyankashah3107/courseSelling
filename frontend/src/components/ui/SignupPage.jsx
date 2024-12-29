@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Mail, Lock, User, MapPin, UserCog } from "lucide-react";
 import styles from "../../style";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 const SignupPage = () => {
+	const navigate = useNavigate()
 	const [formData, setFormData] = useState({
 		username: "",
 		email: "",
@@ -12,6 +14,8 @@ const SignupPage = () => {
 		state: "",
 		role: "user",
 	});
+
+	
 
 	// mutation using tanstack
 
@@ -41,6 +45,33 @@ const SignupPage = () => {
 			);
 		},
 	});
+
+
+
+	const {data: authUser} = 	useQuery({
+		// we use queryKey to give a unique name to out query and refer to it later
+		queryKey: ["authUser"],
+		queryFn: async () => {
+		  try {
+			const res = await fetch("/api/v1/auth/me");
+			const data = await res.json();
+			if(data.error) return null;
+			if(!res.ok) {
+			  throw new Error(data.error || "Something went wrong");
+			}
+			console.log("AuthUser is here", data);
+			return data;
+		  } catch (error) {
+			return null
+		  }
+		},
+		retry: false
+	  })
+
+	if(authUser) {
+		navigate("/")
+	}
+
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

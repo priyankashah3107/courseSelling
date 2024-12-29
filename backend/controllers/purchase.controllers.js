@@ -147,57 +147,100 @@ export const purchaseCourses = async (req, res) => {
   }
 };
 
+// export const getPurchasedCoursebyUserId = async (req, res) => {
+//   // one user can purchase multiple course get purchaseCourse by UserId show this detail to the particular user
+//   // only authenticated user can see their purchased course
+
+//   // TODO: use  middleware
+//   const { userID } = req.params;
+//   console.log("UserID is coming from getPurchasedCoursebyUserId", userID);
+//   try {
+//     if (!userID) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Invalid User Id passed in params" });
+//     }
+
+//     const isUserIdExist = await User.findById(userID);
+
+//     if (!isUserIdExist) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Invalid not found" });
+//     }
+
+//     // if (!req.user?.id || userID !== req.user?.id) {
+//     //   // not authenticated and not authorized user
+//     //   return res.status(403).json({
+//     //     success: false,
+//     //     message: "You are not authorized to access this data",
+//     //   });
+//     // }
+
+//     // purchase by the user
+//     const purchases = await Purchase.find({ userID })
+//       .populate("courseId", "title description image price" )
+//       .exec();
+
+//     if (!purchases || !purchases.length === 0) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "No purchases found" });
+//     }
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Successfully fetech the data from UserID",
+//       purchasedCourses: purchases,
+//     });
+//   } catch (error) {
+//     console.error("Error in getPurchasedCoursebyUserId:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//     });
+//   }
+// };
+
+
 export const getPurchasedCoursebyUserId = async (req, res) => {
-  // one user can purchase multiple course get purchaseCourse by UserId show this detail to the particular user
-  // only authenticated user can see their purchased course
+  // Middleware should attach the user object to req
+  const userId = req.user?._id; // Safely access req.user.id
 
-  // TODO: use  middleware
-  const { userID } = req.params;
-  console.log("UserID is coming from getPurchasedCoursebyUserId", userID);
+  console.log("UserID from getPurchasedCoursebyUserId:", userId);
+  console.log("mbnkfajfha kfhafa", req.user)
+
   try {
-    if (!userID) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid User Id passed in params" });
-    }
-
-    const isUserIdExist = await User.findById(userID);
-
-    if (!isUserIdExist) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid not found" });
-    }
-
-    if (!req.user?.id || userID !== req.user?.id) {
-      // not authenticated and not authorized user
-      return res.status(403).json({
+    if (!userId) {
+      return res.status(400).json({
         success: false,
-        message: "You are not authorized to access this data",
+        message: "User is not authenticated.",
       });
     }
 
-    // purchase by the user
-    const purchases = await Purchase.find({ userID })
-      .populate("courseId", "title")
+    // Fetch purchases by userId and populate course details
+    const purchases = await Purchase.find({ userId })
+      .populate("courseId", "title") // Populating course details (title only)
       .exec();
 
-    if (!purchases || !purchases.length === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No purchases found" });
+    if (!purchases || purchases.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No purchased courses found for this user.",
+      });
     }
 
+    // Respond with purchases
     return res.status(200).json({
       success: true,
-      message: "Successfully fetech the data from UserID",
+      message: "Purchased courses fetched successfully.",
       purchasedCourses: purchases,
     });
   } catch (error) {
     console.error("Error in getPurchasedCoursebyUserId:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: "Internal server error. Please try again later.",
     });
   }
 };

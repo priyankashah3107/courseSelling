@@ -114,7 +114,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+   
     if (!email || !password) {
       return res
         .status(400)
@@ -122,6 +122,12 @@ export const login = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
+    // const purchasedCourse = await Purchase.findOne({userID: user._id})
+    // const purchasedCourse = await Purchase.findOne({userID: user.userID})
+
+  //  if(!purchasedCourse) {
+  //   return res.status(404).json({success: false, message: "No Course Found"})
+  //  }
 
     if (!user) {
       return res
@@ -142,7 +148,7 @@ export const login = async (req, res) => {
 
     return res
       .status(200)
-      .json({ success: true, message: "Login Successfully" });
+      .json({ success: true, message: "Login Successfully"});
   } catch (error) {
     console.log("Error in Login Contoller Routes", error);
     return res

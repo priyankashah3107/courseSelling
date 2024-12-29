@@ -11,6 +11,7 @@ import { getCourseById } from "./controllers/course.controllers.js";
 import purchaseRoutes from "../backend/routes/purchase.routes.js";
 import adminRoutes from "../backend/routes/admin.routes.js";
 import { protectRoute_SECRET_TOKEN } from "./middlewars/protectRoute.js";
+import { getPurchasedCourseUserById } from "./controllers/purchase.controllers.js";
 const app = express();
 
 const PORT = env_Vars.PORT;

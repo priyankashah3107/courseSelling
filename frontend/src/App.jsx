@@ -3,7 +3,7 @@ import Navbar from "./components/ui/Navbar";
 import styles from "./style";
 import Hero from "./components/ui/Hero";
 import HomePage from "./components/ui/HomePage";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
 import SignupPage from "./components/ui/SignupPage";
 import LoginPage from "./components/ui/LoginPage";
@@ -17,6 +17,7 @@ import axios from "axios";
 import LoadingSkeleton from "./components/ui/LoadingSkeleton";
 
 const App = () => {
+  const navigate = useNavigate()
   const {data: authUser, isLoading, error, isError} = 	useQuery({
     // we use queryKey to give a unique name to out query and refer to it later
     queryKey: ["authUser"],
@@ -31,7 +32,7 @@ const App = () => {
         console.log("AuthUser is here", data);
         return data;
       } catch (error) {
-        throw new Error(error)
+        return null
       }
     },
     retry: false
@@ -43,18 +44,20 @@ const App = () => {
   }
 
   // If the user is not authenticated, redirect to login page
-  if (isError || !authUser) {
-    return <Navigate to="/signup" />;
-  }
+  // if (isError || !authUser) {
+  //   navigate("/login")
+    
+  // }
+
 
   return (
     <div>
       <Routes>
-        <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/signup" />} />
-        <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to="/" />} />
-        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={<SignupPage />  }/>
+        <Route path="/login" element={<LoginPage />  }/>
         <Route path="/allcourses" element={<AllCourses />} />
-        <Route path="/mypurchases" element={<MyPurchases />} />
+        <Route path="/mypurchases/:userID" element={<MyPurchases />} />
         <Route path="/subcontent" element={<SubContent />} />
         <Route path="/buynow" element={<BuyNow />} />
       </Routes>

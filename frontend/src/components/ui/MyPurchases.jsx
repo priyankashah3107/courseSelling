@@ -237,10 +237,11 @@
 
 
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetech";
 import Button from "./Button";
 import { formatCurrency } from "../../utils/formatCurrency.js";
+import { useQuery } from "@tanstack/react-query";
 
 // Loading skeleton component for better UX
 const PurchasesSkeleton = () => (
@@ -254,25 +255,25 @@ const PurchasesSkeleton = () => (
   </div>
 );
 
-const PurchaseCard = ({ course, onBuyNow }) => (
+const PurchaseCard = ({ purchasedCourses, onBuyNow }) => (
   <div className="bg-gray-800 rounded-lg p-5 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col group">
     <div className="relative overflow-hidden rounded-md">
       <img
-        src={course.image}
-        alt={course.title}
+        src={purchasedCourses?.image}
+        alt={purchasedCourses?.title}
         className="w-full h-40 object-cover rounded-md transform group-hover:scale-105 transition-transform duration-300"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
     </div>
     <h2 className="text-lg sm:text-xl font-semibold mt-4 line-clamp-1 text-white">
-      {course.title}
+      {purchasedCourses?.title}
     </h2>
     <p className="text-gray-400 mt-2 text-sm line-clamp-2">
-      {course.description}
+      {purchasedCourses?.description}
     </p>
     <div className="mt-auto pt-4">
       <p className="text-xl font-medium text-[#26D0CE]">
-        {formatCurrency(course.price)}
+        {formatCurrency(purchasedCourses?.price)}
       </p>
       <button
         onClick={onBuyNow}
@@ -285,10 +286,21 @@ const PurchaseCard = ({ course, onBuyNow }) => (
 );
 
 const MyPurchases = () => {
+  const { userID } = useParams()
   const navigate = useNavigate();
   const { data, loading, error } = useFetch(
     `http://localhost:8080/api/v1/purchased/purchasedcourses/${userID}`
   );
+
+  console.log("Data kjdhjdhkdhskj ", data)
+
+
+  // const {data, isLoading, isError, error} = useQuery({
+  //   queryKey: "authUser",
+  //   queryFn: async () => {
+
+  //   }
+  // })
 
   const handleSubContent = () => {
     navigate("/subcontent");
@@ -326,14 +338,18 @@ const MyPurchases = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {loading ? (
             [...Array(6)].map((_, index) => <PurchasesSkeleton key={index} />)
-          ) : data?.content?.length > 0 ? (
-            data.content.map((course, index) => (
+          ) : data?.purchasedCourses?.length > 0 ? (
+            data.purchasedCourses.map((course, index) => {
+              console.log("Coursesss", course)
+              return (
+              
               <PurchaseCard
                 key={course._id || index}
+                purchasedCourses={course.courseId}
                 course={course}
                 onBuyNow={handleSubContent}
-              />
-            ))
+              />)
+              })
           ) : (
             <div className="col-span-full text-center py-20">
               <div className="inline-block p-6 rounded-lg bg-gray-800/50 backdrop-blur-sm">

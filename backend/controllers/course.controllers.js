@@ -277,6 +277,8 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
+
+
 // I want to group all the course on the behalf of the creator
 // high level mongodb give by gpt
 // export const getAllCourses = async (req, res) => {

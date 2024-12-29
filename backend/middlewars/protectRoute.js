@@ -49,7 +49,7 @@ export function protectRoute_SECRET_TOKEN(Secret_Token) {
       // decode the tokenQ
 
       let decode = jwt.verify(token, Secret_Token);
-
+      console.log("Decode", decode)
       const user =
         (await User.findById(decode.userId).select("-password")) ||
         (await Admin.findById(decode.userId).select("-password"));

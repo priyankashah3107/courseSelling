@@ -14,7 +14,7 @@ const useFetch = (url) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get(url, { cancelToken: source.token });
+        const response = await axios.get(url, { withCredentials: true });
         setData(response.data);
       } catch (error) {
         if (axios.isCancel(error)) {
