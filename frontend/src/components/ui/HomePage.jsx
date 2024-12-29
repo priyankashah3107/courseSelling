@@ -187,12 +187,12 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="bg-primary h-screen w-full overflow-scroll ">
-      <div className={`${styles.paddingX} ${styles.flexCenter}`}>
+    <div className="bg-primary h-screen w-full  ">
+      {/* <div className={`${styles.paddingX} ${styles.flexCenter}`}>
         <div className={`${styles.boxWidth} ${styles.textWhite}`}>
           <Navbar />
         </div>
-      </div>
+      </div> */}
 
       <div className={`${styles.flexStart} bg-primary `} >
         <div className={`${styles.boxWidth} ${styles.textWhite}`}>

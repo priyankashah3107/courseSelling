@@ -52,6 +52,7 @@ const App = () => {
 
   return (
     <div>
+      <Navbar authUser={authUser} />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignupPage />  }/>

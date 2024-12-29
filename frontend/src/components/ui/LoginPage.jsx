@@ -32,6 +32,7 @@ const LoginPage = () => {
     },
     onSuccess: () => {
        toast.success("Successfully Login 🎉")
+       navigate("/")
     },
     onError: (err) => { 
       
