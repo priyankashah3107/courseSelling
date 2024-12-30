@@ -3,7 +3,7 @@ import Navbar from "./components/ui/Navbar";
 import styles from "./style";
 import Hero from "./components/ui/Hero";
 import HomePage from "./components/ui/HomePage";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Home } from "lucide-react";
 import SignupPage from "./components/ui/SignupPage";
 import LoginPage from "./components/ui/LoginPage";
@@ -15,9 +15,15 @@ import { Toaster } from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import LoadingSkeleton from "./components/ui/LoadingSkeleton";
+import AdminHomePage from "./components/ui/admin/AdminHomePage";
+import AdminSignupPage from "./components/ui/admin/auth/AdminSignupPage";
+import AdminLoginPage from "./components/ui/admin/auth/AdminLoginPage";
 
 const App = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup"];
+  
   const {data: authUser, isLoading, error, isError} = 	useQuery({
     // we use queryKey to give a unique name to out query and refer to it later
     queryKey: ["authUser"],
@@ -43,16 +49,45 @@ const App = () => {
     return <div> <LoadingSkeleton /> </div>; // Show loading skeleton while fetching
   }
 
+  // const {data: adminUser, isError} = 	useQuery({
+  //   queryKey: ["adminUser"],
+  //   queryFn: async () => {
+  //     try {
+  //       const res = await fetch("/api/v1/auth/me");
+  //       const data = await res.json();
+  //       if(data.error) return null;
+  //       if(!res.ok) {
+  //         throw new Error(data.error || "Something went wrong");
+  //       }
+  //       console.log("AuthUser is here", data);
+  //       return data;
+  //     } catch (error) {
+  //       return null
+  //     }
+  //   },
+  //   retry: false
+  // })
+
+
   // If the user is not authenticated, redirect to login page
   // if (isError || !authUser) {
   //   navigate("/login")
     
   // }
 
+  
+  // // If the user is not authenticated, redirect to login page
+  // if (isError || !adminUser) {
+  //   navigate("/adminlogin")
+    
+  // }
+
 
   return (
     <div>
-      <Navbar authUser={authUser} />
+      {/* <Navbar authUser={authUser} /> */}
+      {/* {location.pathname !== "/admin"  && <Navbar authUser={authUser} />} */}
+      {!excludedRoutes.includes(location.pathname) && <Navbar authUser={authUser}  />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignupPage />  }/>
@@ -62,6 +97,10 @@ const App = () => {
         {/* <Route path="/mypurchases/:userID" element={<MyPurchases />} /> */}
         <Route path="/subcontent" element={<SubContent />} />
         <Route path="/buynow" element={<BuyNow />} />
+        <Route path="/admin" element={<AdminHomePage />}  />
+        <Route path="/adminsignup" element={<AdminSignupPage />}  />
+        <Route path="/adminlogin" element={<AdminLoginPage />}  />
+
       </Routes>
       <Toaster />
     </div>

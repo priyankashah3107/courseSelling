@@ -69,6 +69,7 @@ export const signup = async (req, res) => {
       });
     }
 
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -168,7 +169,7 @@ export const logout = async (req, res) => {
     res.clearCookie("jwt");
     return res
       .status(200)
-      .json({ success: true, message: "Logged Successfully" });
+      .json({ success: true, message: "Logout Successfully" });
   } catch (error) {
     console.log("Error in Logout Controller Routes", error);
     return res

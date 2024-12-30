@@ -32,6 +32,7 @@ const adminSchema = new mongoose.Schema(
     //   required: true,
     // },
 
+    // this 
     purchasedCourse: [
       {
         type: mongoose.Types.ObjectId,

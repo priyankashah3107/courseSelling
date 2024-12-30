@@ -12,6 +12,7 @@ import purchaseRoutes from "../backend/routes/purchase.routes.js";
 import adminRoutes from "../backend/routes/admin.routes.js";
 import { protectRoute_SECRET_TOKEN } from "./middlewars/protectRoute.js";
 import { getPurchasedCourseUserById } from "./controllers/purchase.controllers.js";
+import buyDeatils from "../backend/routes/buydetails.routes.js"
 const app = express();
 
 const PORT = env_Vars.PORT;
@@ -46,6 +47,8 @@ app.use(
   purchaseRoutes
 );
 app.use("/api/v1/admin", adminRoutes);
+ 
+app.use("/api/v1/viewbuy", buyDeatils);
 
 app.listen(PORT, () => {
   console.log(`App is Running on http://localhost:${PORT}`);
