@@ -6,7 +6,7 @@ import axios from "axios";
 
 const logoutUser = async () => {
   try {
-    const res = await axios.post("/api/v1/admin/logout");
+    const res = await axios.delete("/api/v1/admin/logout");
     return res;
   } catch (error) {
     console.log("Error on Logout the Profile", error);
@@ -34,7 +34,7 @@ const AdminNavbar = () => {
     queryFn: async() => {
       try {
         // const res = await fetch("/api/v1/auth/me",    myMistake
-        const res = await fetch("/api/v1/auth/me", {
+        const res = await fetch("/api/v1/admin/me", {
            credentials: "include", // Ensure cookies are sent
           
         });

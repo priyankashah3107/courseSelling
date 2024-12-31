@@ -178,6 +178,26 @@ export const logout = async (req, res) => {
   }
 };
 
+// export const getAdminLoginUser = async (req, res) => {
+//   try {
+//     const admin = await Admin.findById(req.user.id).select("-password");
+//     if (!admin) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "User not Found" });
+//     }
+
+//     return res.status(200).json({ success: true, admin });
+//   } catch (error) {
+//     console.log("Error in GetLoginRoute", error);
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Internal Server Error" });
+//   }
+// };
+
+
+
 export const getAdminLoginUser = async (req, res) => {
   try {
     const admin = await Admin.findById(req.user.id).select("-password");
@@ -189,7 +209,7 @@ export const getAdminLoginUser = async (req, res) => {
 
     return res.status(200).json({ success: true, admin });
   } catch (error) {
-    console.log("Error in GetLoginRoute", error);
+    console.error("Error in GetLoginRoute", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
