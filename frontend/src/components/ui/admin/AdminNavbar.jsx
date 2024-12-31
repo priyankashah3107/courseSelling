@@ -20,7 +20,7 @@ const AdminNavbar = () => {
   const { mutate, isError, error } = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      navigate("/login"); // Redirect after successful logout
+      navigate("/adminlogin"); 
     },
   });
 
@@ -33,8 +33,10 @@ const AdminNavbar = () => {
     queryKey: ["adminUser"],
     queryFn: async() => {
       try {
-        const res = await fetch("http://localhost:8080/api/v1/auth/me", {
-          credentials: "include", // Ensure cookies are sent
+        // const res = await fetch("/api/v1/auth/me",    myMistake
+        const res = await fetch("/api/v1/auth/me", {
+           credentials: "include", // Ensure cookies are sent
+          
         });
         const data = await res.json();
         if (!res.ok || data.error) {
@@ -68,20 +70,20 @@ const AdminNavbar = () => {
           {adminUser ? (
             <>
               <button
-                onClick={() => handleNavigation("/allcourses")}
-                className="text-white hover:text-gray-300"
+                onClick={() => handleNavigation("/createcourse")}
+                className="text-black"
               >
-                Courses
+                Create Course
               </button>
               <button
                 onClick={() => handleNavigation("/mypurchases")}
-                className="text-white hover:text-gray-300"
+                className="text-black"
               >
                 Purchases
               </button>
               <button
                 onClick={handleLogout}
-                className="bg-gradient-to-b from-[#def9fa] via-[#bef3f5] to-[#33bbcf] px-4 py-2 rounded text-black font-semibold"
+                className="bg-[#232322] px-4 py-2 rounded text-white font-semibold"
               >
                 Logout
               </button>
@@ -121,20 +123,20 @@ const AdminNavbar = () => {
           {adminUser ? (
             <>
               <button
-                onClick={() => handleNavigation("/allcourses")}
-                className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded"
+                onClick={() => handleNavigation("/createcourse")}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded"
               >
-                Courses
+                create Course
               </button>
               <button
                 onClick={() => handleNavigation("/mypurchases")}
-                className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded"
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded"
               >
                 Purchases
               </button>
               <button
                 onClick={handleLogout}
-                className="block w-full text-left bg-gradient-to-b from-[#def9fa] via-[#bef3f5] to-[#33bbcf] px-4 py-2 rounded text-black font-semibold"
+                className="block w-full text-left bg-[#232322] px-4 py-2 rounded text-white font-semibold"
               >
                 Logout
               </button>

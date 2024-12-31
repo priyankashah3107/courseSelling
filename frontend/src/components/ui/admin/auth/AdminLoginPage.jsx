@@ -18,7 +18,7 @@ const AdminLoginPage = () => {
     queryKey: ["adminUser"],
     queryFn: async () => {
       try {
-        const res = await fetch("/api/v1/auth/me", {
+        const res = await fetch("/api/v1/admin/me", {
           credentials: "include", // Ensure cookies are sent
         });
         const data = await res.json();
@@ -38,7 +38,7 @@ const AdminLoginPage = () => {
   // Handle login
   const { mutate, isLoading, isError, error } = useMutation({
     mutationFn: async (formData) => {
-      const res = await axios.post("http://localhost:8080/api/v1/admin/login", formData);
+      const res = await axios.post("/api/v1/admin/login", formData);
       return res.data;
     },
     onSuccess: () => {
@@ -57,7 +57,7 @@ const AdminLoginPage = () => {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     mutate(formData);
   };
 

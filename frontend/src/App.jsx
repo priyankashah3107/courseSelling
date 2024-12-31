@@ -18,11 +18,12 @@ import LoadingSkeleton from "./components/ui/LoadingSkeleton";
 import AdminHomePage from "./components/ui/admin/AdminHomePage";
 import AdminSignupPage from "./components/ui/admin/auth/AdminSignupPage";
 import AdminLoginPage from "./components/ui/admin/auth/AdminLoginPage";
+import CreateCourse from "./components/ui/admin/CreateCourse";
 
 const App = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup"];
+  const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup", "/createcourse"];
   
   const {data: authUser, isLoading, error, isError} = 	useQuery({
     // we use queryKey to give a unique name to out query and refer to it later
@@ -53,11 +54,13 @@ const App = () => {
   // uncomment this for authenticated authUser
 
 
-  // const {data: adminUser, isError} = 	useQuery({
+  // const {data: adminUser} = 	useQuery({
   //   queryKey: ["adminUser"],
   //   queryFn: async () => {
   //     try {
-  //       const res = await fetch("/api/v1/auth/me");
+  //       // const res = await fetch("/api/v1/auth/me"); same mistake
+  //       const res = await fetch("/api/v1/admin/me"); 
+
   //       const data = await res.json();
   //       if(data.error) return null;
   //       if(!res.ok) {
@@ -101,9 +104,11 @@ const App = () => {
         {/* <Route path="/mypurchases/:userID" element={<MyPurchases />} /> */}
         <Route path="/subcontent" element={<SubContent />} />
         <Route path="/buynow" element={<BuyNow />} />
-        {/* <Route path="/admin" element={<AdminHomePage />}  />
+        <Route path="/admin" element={<AdminHomePage />}  />
         <Route path="/adminsignup" element={<AdminSignupPage />}  />
-        <Route path="/adminlogin" element={<AdminLoginPage />}  /> */}
+        <Route path="/adminlogin" element={<AdminLoginPage />}  />
+        <Route path="/adminlogin" element={<CreateCourse />}  />
+
 
       </Routes>
       <Toaster />
@@ -358,6 +363,89 @@ export default App;
 //         <Route path="/subcontent" element={<SubContent />} />
 //         <Route path="/buynow" element={<BuyNow />} />
 //         <Route path="/admin" element={adminUser ? <AdminHomePage /> : <AdminLoginPage />}/>
+//         <Route path="/adminsignup" element={<AdminSignupPage />} />
+//         <Route path="/adminlogin" element={<AdminLoginPage />} />
+//       </Routes>
+//       <Toaster />
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+
+// import React from "react";
+// import { Route, Routes, useLocation } from "react-router-dom";
+// import { useQuery } from "@tanstack/react-query";
+// import Navbar from "./components/ui/Navbar";
+// import LoadingSkeleton from "./components/ui/LoadingSkeleton";
+// import HomePage from "./components/ui/HomePage";
+// import SignupPage from "./components/ui/SignupPage";
+// import LoginPage from "./components/ui/LoginPage";
+// import AllCourses from "./components/ui/AllCourses";
+// import BuyNow from "./components/ui/BuyNow";
+// import MyPurchases from "./components/ui/MyPurchases";
+// import SubContent from "./components/ui/SubContent";
+// import AdminHomePage from "./components/ui/admin/AdminHomePage";
+// import AdminSignupPage from "./components/ui/admin/auth/AdminSignupPage";
+// import AdminLoginPage from "./components/ui/admin/auth/AdminLoginPage";
+// import { Toaster } from "react-hot-toast";
+
+// const App = () => {
+//   const location = useLocation();
+//   const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup"];
+//   const isAdminRoute = excludedRoutes.includes(location.pathname);
+
+//   // Query for normal user authentication
+//   const { data: authUser, isLoading: isLoadingUser } = useQuery({
+//     queryKey: ["authUser"],
+//     queryFn: async () => {
+//       const res = await fetch("/api/v1/auth/me");
+//       if (!res.ok) {
+//         return null;
+//       }
+//       const data = await res.json();
+//       return data.error ? null : data;
+//     },
+//     retry: false,
+//     staleTime: 300000, // Cache for 5 minutes
+//     refetchOnWindowFocus: false, // Prevent unnecessary refetches
+//   });
+
+//   // Query for admin user authentication - only run if on admin routes
+//   const { data: adminUser, isLoading: isLoadingAdmin } = useQuery({
+//     queryKey: ["adminUser"],
+//     queryFn: async () => {
+//       const res = await fetch("/api/v1/admin/me");
+//       if (!res.ok) {
+//         return null;
+//       }
+//       const data = await res.json();
+//       return data.error ? null : data;
+//     },
+//     retry: false,
+//     staleTime: 300000,
+//     refetchOnWindowFocus: false,
+//     enabled: isAdminRoute, // Only run this query on admin routes
+//   });
+
+//   if ((isLoadingUser && !isAdminRoute) || (isLoadingAdmin && isAdminRoute)) {
+//     return <LoadingSkeleton />;
+//   }
+
+//   return (
+//     <div>
+//       {!isAdminRoute && <Navbar authUser={authUser} />}
+//       <Routes>
+//         <Route path="/" element={<HomePage />} />
+//         <Route path="/signup" element={<SignupPage />} />
+//         <Route path="/login" element={<LoginPage />} />
+//         <Route path="/allcourses" element={<AllCourses />} />
+//         <Route path="/mypurchases" element={<MyPurchases />} />
+//         <Route path="/subcontent" element={<SubContent />} />
+//         <Route path="/buynow" element={<BuyNow />} />
+//         <Route path="/admin" element={<AdminHomePage />} />
 //         <Route path="/adminsignup" element={<AdminSignupPage />} />
 //         <Route path="/adminlogin" element={<AdminLoginPage />} />
 //       </Routes>
