@@ -12,6 +12,9 @@ const AdminHomePage = () => {
           <AdminNavbar />
         </div>
       </div>
+
+
+      {/* fetch created course data and give admin to update the created course and delete course */}
     </div>
   )
 }

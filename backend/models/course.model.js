@@ -29,7 +29,7 @@ const courseSchema = new mongoose.Schema(
       },
     ],
     price: {
-      type: Number,
+      type: String,
       required: true,
     },
     // one course can purchased by multipleUser
