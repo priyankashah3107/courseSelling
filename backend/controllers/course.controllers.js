@@ -119,6 +119,7 @@ export const createCourses = async (req, res) => {
 
     // creator of the course
     const creatorData = req.user; // This value is coming from middleware which is protectRoute
+    console.log("CReated Daata", req.user)
     console.log("CreatorData from CreateCourses", creatorData.username);
     if (!creatorData) {
       return res

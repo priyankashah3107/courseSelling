@@ -36,9 +36,16 @@ app.use(
 
   courseRoutes
 );
+// app.use(
+//   "/api/v1/categories",
+//   protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+//   categoryRoutes
+// );
+
+
 app.use(
   "/api/v1/categories",
-  protectRoute_SECRET_TOKEN(env_Vars.USER_SECRET_TOKEN),
+  protectRoute_SECRET_TOKEN(env_Vars.ADMIN_SECRET_TOKEN),
   categoryRoutes
 );
 app.use(

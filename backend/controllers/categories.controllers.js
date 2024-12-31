@@ -16,7 +16,7 @@ export const categoryRoutes = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Description length should be at least 8 characters",
-      });
+      }); 
     }
 
     // Check for duplicate title
