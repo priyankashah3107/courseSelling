@@ -30,19 +30,22 @@ const AdminNavbar = () => {
 
  
   const {data: adminUser} = useQuery({
-    queryKey: "adminUser",
+    queryKey: ["adminUser"],
     queryFn: async() => {
-        try {
-            const res = await fetch("/api/v1/admin/me")
-            const data = await res.json()
-            if(data.error) return null;
-            if(!res.ok) {
-                throw new Error(data.error || "something went wrong")
-            }
-            console.log("AdminUser is here", data)
-        } catch (error) {
-            return null
+      try {
+        const res = await fetch("http://localhost:8080/api/v1/auth/me", {
+          credentials: "include", // Ensure cookies are sent
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          console.error("Error fetching admin user:", data.error || "Unknown error");
+          return null;
         }
+        return data;
+      } catch (error) {
+        console.error("Error in queryFn:", error);
+        return null;
+      }
     },
     retry: false
   })

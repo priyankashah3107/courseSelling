@@ -14,31 +14,47 @@ const AdminLoginPage = () => {
   });
 
   // Refetch user data after login
-  const { refetch } = useQuery({
-    queryKey: "adminUser",
+  const { data: adminUser } = useQuery({
+    queryKey: ["adminUser"],
     queryFn: async () => {
-      const res = await fetch("/api/v1/admin/me");
-      if (!res.ok) throw new Error("Failed to fetch user");
-      return res.json();
+      try {
+        const res = await fetch("/api/v1/auth/me", {
+          credentials: "include", // Ensure cookies are sent
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          console.error("Error fetching admin user:", data.error || "Unknown error");
+          return null;
+        }
+        return data;
+      } catch (error) {
+        console.error("Error in queryFn:", error);
+        return null;
+      }
     },
-    enabled: false, // Prevent automatic fetching
+    retry: false, // Prevent automatic fetching
   });
 
   // Handle login
   const { mutate, isLoading, isError, error } = useMutation({
     mutationFn: async (formData) => {
-      const res = await axios.post("/api/v1/admin/login", formData);
+      const res = await axios.post("http://localhost:8080/api/v1/admin/login", formData);
       return res.data;
     },
     onSuccess: () => {
       toast.success("Successfully Logged In 🎉");
-      refetch(); // Refetch the admin user data
+       // Refetch the admin user data
       navigate("/admin");
     },
     onError: (err) => {
       toast.error(`Login Failed: ${err.response?.data?.message || err.message}`);
     },
   });
+
+
+  if(adminUser) {
+    navigate('/admin')
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();

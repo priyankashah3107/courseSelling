@@ -49,6 +49,10 @@ const App = () => {
     return <div> <LoadingSkeleton /> </div>; // Show loading skeleton while fetching
   }
 
+
+  // uncomment this for authenticated authUser
+
+
   // const {data: adminUser, isError} = 	useQuery({
   //   queryKey: ["adminUser"],
   //   queryFn: async () => {
@@ -97,9 +101,9 @@ const App = () => {
         {/* <Route path="/mypurchases/:userID" element={<MyPurchases />} /> */}
         <Route path="/subcontent" element={<SubContent />} />
         <Route path="/buynow" element={<BuyNow />} />
-        <Route path="/admin" element={<AdminHomePage />}  />
+        {/* <Route path="/admin" element={<AdminHomePage />}  />
         <Route path="/adminsignup" element={<AdminSignupPage />}  />
-        <Route path="/adminlogin" element={<AdminLoginPage />}  />
+        <Route path="/adminlogin" element={<AdminLoginPage />}  /> */}
 
       </Routes>
       <Toaster />
@@ -108,6 +112,34 @@ const App = () => {
 };
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -236,3 +268,102 @@ export default App;
 // export default App;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React from "react";
+// import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+// import { useQuery } from "@tanstack/react-query";
+// import Navbar from "./components/ui/Navbar";
+// import LoadingSkeleton from "./components/ui/LoadingSkeleton";
+// import HomePage from "./components/ui/HomePage";
+// import SignupPage from "./components/ui/SignupPage";
+// import LoginPage from "./components/ui/LoginPage";
+// import AllCourses from "./components/ui/AllCourses";
+// import BuyNow from "./components/ui/BuyNow";
+// import MyPurchases from "./components/ui/MyPurchases";
+// import SubContent from "./components/ui/SubContent";
+// import AdminHomePage from "./components/ui/admin/AdminHomePage";
+// import AdminSignupPage from "./components/ui/admin/auth/AdminSignupPage";
+// import AdminLoginPage from "./components/ui/admin/auth/AdminLoginPage";
+// import { Toaster } from "react-hot-toast";
+
+// const App = () => {
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup"];
+
+//   // Query for normal user authentication
+//   const { data: authUser, isLoading: isLoadingUser } = useQuery({
+//     queryKey: ["authUser"],
+//     queryFn: async () => {
+//       const res = await fetch("/api/v1/auth/me");
+//       if (!res.ok) {
+//         throw new Error("Failed to fetch user authentication");
+//       }
+//       const data = await res.json();
+//       return data.error ? null : data;
+//     },
+//     retry: false,
+//   });
+
+//   // Query for admin user authentication
+//   const { data: adminUser, isLoading: isLoadingAdmin } = useQuery({
+//     queryKey: ["adminUser"],
+//     queryFn: async () => {
+//       const res = await fetch("/api/v1/admin/me");
+//       if (!res.ok) {
+//         throw new Error("Failed to fetch admin authentication");
+//       }
+//       const data = await res.json();
+//       return data.error ? null : data;
+//     },
+//     retry: false,
+//   });
+
+//   // Show loading skeleton while fetching
+//   if (isLoadingUser || isLoadingAdmin) {
+//     return <div><LoadingSkeleton /></div>;
+//   }
+
+//   // If neither user nor admin is authenticated, navigate to appropriate login page
+//   if (!authUser  && location.pathname !== "/adminsignup") {
+//     navigate("/adminlogin");
+//   }
+//   if (!adminUser && excludedRoutes.includes(location.pathname)) {
+//     navigate("/adminlogin");
+//   }
+
+//   return (
+//     <div>
+//       {!excludedRoutes.includes(location.pathname) && <Navbar authUser={authUser} />}
+//       <Routes>
+//         <Route path="/" element={<HomePage />} />
+//         <Route path="/signup" element={<SignupPage />} />
+//         <Route path="/login" element={<LoginPage />} />
+//         <Route path="/allcourses" element={<AllCourses />} />
+//         <Route path="/mypurchases" element={<MyPurchases />} />
+//         <Route path="/subcontent" element={<SubContent />} />
+//         <Route path="/buynow" element={<BuyNow />} />
+//         <Route path="/admin" element={adminUser ? <AdminHomePage /> : <AdminLoginPage />}/>
+//         <Route path="/adminsignup" element={<AdminSignupPage />} />
+//         <Route path="/adminlogin" element={<AdminLoginPage />} />
+//       </Routes>
+//       <Toaster />
+//     </div>
+//   );
+// };
+
+// export default App;

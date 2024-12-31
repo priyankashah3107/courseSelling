@@ -36,41 +36,79 @@ import Admin from "../models/admin.models.js";
 //   }
 // };
 
-export function protectRoute_SECRET_TOKEN(Secret_Token) {
-  return async function protectRoute(req, res, next) {
-    try {
-      const token = req.cookies["jwt"];
-      console.log("Token received:", token);
-      if (!token) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Authentication token missing" });
-      }
-      // decode the tokenQ
 
 
-      let decode = jwt.verify(token, Secret_Token);
-      console.log("Decode", decode)
-      const user =
-        (await User.findById(decode.userId).select("-password")) ||
-        (await Admin.findById(decode.userId).select("-password"));
-      console.log("Fetched User", user);
-      if (!user) {
-        return res
-          .status(404)
-          .json({ success: false, message: "User Not Found" });
-      }
-      req.user = user;
-      console.log("User info from Protected Route", user); 
-      next();
-    } catch (error) {
-      console.log("Error in ProtectRoute", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Internal Server Errorr" });
-    }
-  };
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// old
+
+// export function protectRoute_SECRET_TOKEN(Secret_Token) {
+//   return async function protectRoute(req, res, next) {
+//     try {
+//       const token = req.cookies["jwt"];
+//       console.log("Token received:", token);
+//       console.log("Secret token:", Secret_Token);
+
+//       if (!token) {
+//         return res
+//           .status(401)
+//           .json({ success: false, message: "Authentication token missing" });
+//       }
+//       // decode the tokenQ
+
+
+//       let decode = jwt.verify(token, Secret_Token);
+//       console.log("Decode", decode)
+//       const user =
+//         (await User.findById(decode.userId).select("-password")) ||
+//         (await Admin.findById(decode.userId).select("-password"));
+//       console.log("Fetched User", user);
+//       if (!user) {
+//         return res
+//           .status(404)
+//           .json({ success: false, message: "User Not Found" });
+//       }
+//       req.user = user;
+//       console.log("User info from Protected Route", user); 
+//       next();
+//     } catch (error) {
+//       console.log("Error in ProtectRoute", error);
+//       return res
+//         .status(500)
+//         .json({ success: false, message: "Internal Server Errorr" });
+//     }
+//   };
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // export function protectRoute_SECRET_TOKEN(Secret_Token) {
 //   return async function protectRoute(req, res, next) {
@@ -119,3 +157,65 @@ export function protectRoute_SECRET_TOKEN(Secret_Token) {
 //     }
 //   };
 // }
+
+
+
+
+
+
+
+
+// new 
+
+
+export function protectRoute_SECRET_TOKEN(Secret_Token) {
+  return async function protectRoute(req, res, next) {
+    try {
+      const token = req.cookies["jwt"];
+      console.log("Token received:", token);
+      console.log("Secret used:", Secret_Token);
+
+      if (!token) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Authentication token missing" });
+      }
+
+      // Decode the token
+      let decode;
+      try {
+        decode = jwt.verify(token, Secret_Token);
+      } catch (error) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Invalid or expired token" });
+      }
+      console.log("Decoded:", decode);
+
+      // Determine whether to fetch User or Admin based on the route
+      let user;
+      if (req.originalUrl.startsWith("/admin")) {
+        // Admin route
+        user = await Admin.findById(decode.userId).select("-password");
+      } else {
+        // User route
+        user = await User.findById(decode.userId).select("-password");
+      }
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
+      }
+
+      req.user = user;
+      console.log("User info from Protected Route", user); 
+      next();
+    } catch (error) {
+      console.error("Error in ProtectRoute", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal Server Error" });
+    }
+  };
+}
