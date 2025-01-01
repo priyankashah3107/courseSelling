@@ -64,6 +64,30 @@ const handleUpdate = () => {
 
 
 
+ // delete the course by their courseId 
+
+ const {mutate: deleteCourseById} = useMutation({
+     mutationFn:  async(id) => {
+      try {
+        const res = await axios.delete(`/api/v1/courses/deletecourses/${id}`)
+        return res.data
+      } catch (error) {
+        console.log("Error while deleting the course", error)
+        throw error
+      }
+     }, 
+     onSuccess: () => {
+      toast.success("Course Deleted Successfully 🎉")
+     }, 
+     onError: () => {
+      toast.error("Unable to delete the course")
+     }
+ })
+
+ const handleDeleteCourseById = (id) => {
+    deleteCourseById(id)
+ }
+
   return (
     <div className="bg-[#efefef] h-screen w-full text-black ">
 
@@ -80,7 +104,7 @@ const handleUpdate = () => {
             <div className='max-w-7xl mx-auto'>
             <div  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {data?.content?.map((val, index) => (
-              <div key={index} className="bg-[#a3a3a3] rounded-lg p-5 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col group"> 
+              <div key={index} className="bg-[#ffffff] rounded-lg p-5 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col group"> 
               <div></div>
               <img
               src={val.image}
@@ -102,6 +126,7 @@ const handleUpdate = () => {
                      Update
                     </button>
                     <button 
+                    onClick={() => handleDeleteCourseById(val._id)}
                       className="mt-3 w-full bg-gradient-to-r from-[#ff3f3f] to-[#e60808] text-white font-semibold rounded-md px-5 py-2.5 hover:from-[#e7453f] hover:to-[#f62b2b] transition-all duration-300 transform hover:-translate-y-0.5">
                      Delete
                     </button>

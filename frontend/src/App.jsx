@@ -24,7 +24,7 @@ import UpdateCourse from "./components/ui/admin/UpdateCourse";
 const App = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup", "/createcourse", "/update"];
+  const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup", "/createcourse", "/update", "/update/:id"];
   
   const {data: authUser, isLoading, error, isError} = 	useQuery({
     // we use queryKey to give a unique name to out query and refer to it later
