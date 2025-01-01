@@ -5,6 +5,8 @@ import {
   deleteCourseById,
   getAllCourses,
   getCourseById,
+
+  getCoursesByUserId,
   updateCourseById,
 } from "../controllers/course.controllers.js";
 import { protectRoute_SECRET_TOKEN } from "../middlewars/protectRoute.js";
@@ -25,8 +27,10 @@ router.post(
   createCourses
 ); 
 router.get("/getcourses", getAllCourses); // Get all courses (public route)
-router.patch("/updatecourse/:id", updateCourseById); // Update course by ID
+router.patch("/updatecourse/:id", protectRoute_SECRET_TOKEN(env_Vars.ADMIN_SECRET_TOKEN), updateCourseById); // Update course by ID
 router.delete("/deletecourses/:id", deleteCourseById); // Delete course by ID
 router.get("/particulatcourse/:id", getCourseById); // Get course details by ID (public route)
+router.get("/courseadmin", protectRoute_SECRET_TOKEN(env_Vars.ADMIN_SECRET_TOKEN), getCoursesByUserId); // Get course details by ID (public route)
+
 
 export default router;

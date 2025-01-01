@@ -19,11 +19,12 @@ import AdminHomePage from "./components/ui/admin/AdminHomePage";
 import AdminSignupPage from "./components/ui/admin/auth/AdminSignupPage";
 import AdminLoginPage from "./components/ui/admin/auth/AdminLoginPage";
 import CreateCourse from "./components/ui/admin/CreateCourse";
+import UpdateCourse from "./components/ui/admin/UpdateCourse";
 
 const App = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup", "/createcourse"];
+  const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup", "/createcourse", "/update"];
   
   const {data: authUser, isLoading, error, isError} = 	useQuery({
     // we use queryKey to give a unique name to out query and refer to it later
@@ -108,7 +109,8 @@ const App = () => {
         <Route path="/adminsignup" element={<AdminSignupPage />}  />
         <Route path="/adminlogin" element={<AdminLoginPage />}  />
         <Route path="/createcourse" element={<CreateCourse />}  />
-
+        <Route path="/update/:id" element={<UpdateCourse />}  />
+        
 
       </Routes>
       <Toaster />

@@ -95,7 +95,7 @@ export const createCourses = async (req, res) => {
     // cheking is title is already exist
 
     const isTitleExist = await Course.findOne({ title });
-
+ 
     if (isTitleExist) {
       return res
         .status(400)
@@ -229,59 +229,131 @@ export const createCourses = async (req, res) => {
 
 
 
+// written by me 
+// export const updateCourseById = async (req, res) => {
+//   const { id } = req.params;
+//   const { title, image, description, price, category } = req.body;
+//   console.log("This is the Course Id", id);
+//   const userId = req.user._id;
+//   // tasks I want to update everything like: title, image, description, price, category
+//   // task2. Finding the course in the database
+//   // task3. checking Is this creator exist in course schema and check with the authentcated user
+//   // Validate and fetch category if necessary
 
+//   try {
+//     if (!title || !image || !description || !price || !category) {
+//       return res
+//         .status(400)
+//         .json({ success: true, message: "All feilds are required" });
+//     }
+
+//     let categoryId = category;
+
+//     if (!mongoose.Types.ObjectId.isValid(category)) {
+//       const categoryData = await Category.findOne({ title: category });
+
+//       if (!categoryData) {
+//         return res.status(404).json({
+//           success: false,
+//           message: "Category not found please use a valid category title",
+//         });
+//       }
+
+//       categoryId = categoryData._id; // assing to the category objectid
+//     }
+//     console.log("CategoryId", categoryId);
+//     const updateCourse = await Course.findOneAndUpdate(
+//       { _id: id, creator: { _id: req.user.id } },   // only autheticated admin can update the course. particular course belongs to that owner
+//       // req.user._id,
+//       { title, image, description, price, category: categoryId },
+//       { new: true, runValidators: true }
+//     );
+
+//     console.log("UpdatedCourse", updateCourse);
+//     // await updateCourse.save();
+//     if (!updateCourse) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Invalid course" });
+//     }
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Course updated successfully",
+//       userId,
+//       content: updateCourse,
+//     });
+//   } catch (error) {
+//     console.log("Error in updateCourseById controller:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//     });
+//   }
+// };
+
+
+
+// gpt
 export const updateCourseById = async (req, res) => {
   const { id } = req.params;
   const { title, image, description, price, category } = req.body;
   console.log("This is the Course Id", id);
-  const userId = req.user._id;
-  // tasks I want to update everything like: title, image, description, price, category
-  // task2. Finding the course in the database
-  // task3. checking Is this creator exist in course schema and check with the authentcated user
-  // Validate and fetch category if necessary
+
+  // const userId = req.user._id;
 
   try {
-    if (!title || !image || !description || !price || !category) {
-      return res
-        .status(400)
-        .json({ success: true, message: "All feilds are required" });
+    // Find the course first to validate ownership and existence
+    const course = await Course.findOne({ _id: id, creator: req.user._id });
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found or you do not have permission to update it",
+      });
     }
 
-    let categoryId = category;
+    // Create an object with only the fields to be updated
+    const updateFields = {};
+    if (title) updateFields.title = title;
+    if (image) updateFields.image = image;
+    if (description) updateFields.description = description;
+    if (price) updateFields.price = price;
 
-    if (!mongoose.Types.ObjectId.isValid(category)) {
-      const categoryData = await Category.findOne({ title: category });
-
-      if (!categoryData) {
-        return res.status(404).json({
-          success: false,
-          message: "Category not found please use a valid category title",
-        });
+    if (category) {
+      // Validate and fetch category if necessary
+      if (!mongoose.Types.ObjectId.isValid(category)) {
+        const categoryData = await Category.findOne({ title: category });
+        if (!categoryData) {
+          return res.status(404).json({
+            success: false,
+            message: "Category not found. Please use a valid category title",
+          });
+        }
+        updateFields.category = categoryData._id;
+      } else {
+        updateFields.category = category;
       }
-
-      categoryId = categoryData._id; // assing to the category objectid
     }
-    console.log("CategoryId", categoryId);
-    const updateCourse = await Course.findOneAndUpdate(
-      { _id: id, creator: { _id: req.user.id } },
-      // req.user._id,
-      { title, image, description, price, category: categoryId },
+
+    console.log("Fields to update:", updateFields);
+
+    // Perform the update
+    const updatedCourse = await Course.findOneAndUpdate(
+      { _id: id, creator: req.user._id },
+      { $set: updateFields }, // Use $set to apply partial updates
       { new: true, runValidators: true }
     );
 
-    console.log("UpdatedCourse", updateCourse);
-    // await updateCourse.save();
-    if (!updateCourse) {
+    if (!updatedCourse) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid course" });
+        .json({ success: false, message: "Course update failed" });
     }
 
     return res.status(200).json({
       success: true,
       message: "Course updated successfully",
-      userId,
-      content: updateCourse,
+      content: updatedCourse,
     });
   } catch (error) {
     console.log("Error in updateCourseById controller:", error);
@@ -291,6 +363,44 @@ export const updateCourseById = async (req, res) => {
     });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // export const updateCourseById = async (req, res) => {
 //   const { id } = req.params;
@@ -512,3 +622,31 @@ export const getCourseById = async (req, res) => {
 //     console.log("Error in GetCourseById", error);
 //   }
 // };
+
+
+
+export const getCoursesByUserId = async (req, res) => {
+  try {
+    // Fetch all courses that are created by the authenticated user (req.user._id)
+    const createdCourses = await Course.find({ creator: req.user._id });
+     
+    if (!createdCourses || createdCourses.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No courses found or you are not the authenticated user",
+      });
+    }
+
+    // Return the list of created courses
+    return res.status(200).json({
+      success: true,
+      content: createdCourses,
+    });
+  } catch (error) {
+    console.log("Error in getCoursesByUserId:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};

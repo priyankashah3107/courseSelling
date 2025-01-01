@@ -2,14 +2,17 @@ import React from 'react'
 import styles from '../../../style.js'
 import AdminNavbar from './AdminNavbar'
 import { useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { formatCurrency } from '../../../utils/formatCurrency.js'
+import toast from 'react-hot-toast'
 
 
 const getAllCourses = async () => {
   try {
-     const res = await axios.get("/api/v1/courses/getcourses", {withCredentials: true })
+    //  const res = await axios.get("/api/v1/courses/getcourses", {withCredentials: true })
+    const res = await axios.get("/api/v1/courses/courseadmin", {withCredentials: true })
+
      console.log("Fetch Data from AdminHomePage", res)
      return res.data;
   } catch (error) {
@@ -25,6 +28,42 @@ const AdminHomePage = () => {
       queryKey: ["allCourses"],
       queryFn: getAllCourses
   })
+
+
+// patch request to update the course 
+const {mutate} = useMutation({
+    mutationFn: async({title, image, description, price, category}) => {
+      try {
+        const res = await axios.patch(`/api/v1/courses/updatecourse/${id}`, {
+          title, image, description, price, category
+        })
+        console.log("Particular Course from AdminHome Page", res)
+        return res.data
+      } catch (error) {
+        console.log("error to update the Course", error)
+        throw error
+      }
+    }, 
+    onSuccess: () => {
+      toast.success("Course Updated Successfully 🎉")
+    }, 
+    onError: () => {
+      toast.error(`Course Updation Failed: ${err.response?.data?.message || err.message} `)
+    }
+})
+
+
+const handleNavigateUpdateButton = (id) => {
+  navigate(`/update/${id}`)
+}
+
+const handleUpdate = () => {
+  console.log("Update Course Data",  title, image, description, price, category)
+  mutate( title, image, description, price, category)
+}
+
+
+
   return (
     <div className="bg-[#efefef] h-screen w-full text-black ">
 
@@ -58,6 +97,7 @@ const AdminHomePage = () => {
                       {formatCurrency(val.price)}
                     </p>
                     <button 
+                    onClick={() => handleNavigateUpdateButton(val._id)} 
                       className="mt-3 w-full bg-gradient-to-r from-[#1b184b] to-[#1A2980] text-white font-semibold rounded-md px-5 py-2.5 hover:from-[#1A2980] hover:to-[#2a0f4e] transition-all duration-300 transform hover:-translate-y-0.5">
                      Update
                     </button>
