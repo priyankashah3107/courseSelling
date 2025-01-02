@@ -9,7 +9,9 @@ import { purchaseCourse } from "../controllers/user.controllers.js";
 const router = Router();
 
 router.get("/getpurchased/:userID/:courseId", getPurchasedCourseUserById);
-router.post("/purchasecourses", purchaseCourse);
+// router.post("/purchasecourses", purchaseCourse);
+router.post("/purchasecourses/:courseId", purchaseCourse);
+
 // router.get("/purchasedcourses/:userID", getPurchasedCoursebyUserId); 
 router.get("/purchasedcourses", getPurchasedCoursebyUserId); // one user can have many courses
 router.get("/purchasedcourseId/:courseId", getPurchasedCoursebyCourseId); // one course have many user

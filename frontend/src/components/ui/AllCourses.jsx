@@ -73,6 +73,9 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetech";
 import Button from "./Button";
 import { formatCurrency } from "../../utils/formatCurrency.js";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 // Loading skeleton component for better UX
 const CourseSkeleton = () => (
@@ -110,7 +113,7 @@ const CourseCard = ({ course, onBuyNow }) => (
         onClick={onBuyNow}
         className="mt-3 w-full bg-gradient-to-r from-[#26D0CE] to-[#1A2980] text-white font-semibold rounded-md px-5 py-2.5 hover:from-[#1A2980] hover:to-[#26D0CE] transition-all duration-300 transform hover:-translate-y-0.5"
       >
-        View Details
+        Purchase
       </button>
     </div>
   </div>
@@ -135,6 +138,36 @@ const AllCourses = () => {
         </div>
       </div>
     );
+  }
+
+  // getThe course by their courseId 
+  // purchased the course by their courseId 
+
+  const {mutate, isError, isPending} = useMutation({
+     mutationFn:  async (courseId) => {
+        try {
+           const res = await axios.post(`/api/v1/purchased/purchasecourses/${courseId}`)
+           console.log("Purchased Course By their CourseId", res)
+           return res.data
+        } catch (error) {
+          console.log("Error while Purchasing the course", error)
+          throw error
+        }
+     }, 
+    onSuccess: () => {
+      toast.success("You Successfully Purchased the Course 🎉")
+    }, 
+    onError: () => {
+      toast.error("Error While Purchasing the course 😔")
+    }
+     
+  })
+
+
+  const handlePurchasedCourse = (courseId) => {
+    mutate(courseId)
+    console.log("Purchases CourseId from AllCourses", courseId)
+    navigate("/mypurchases")
   }
 
   return (
@@ -163,7 +196,8 @@ const AllCourses = () => {
               <CourseCard
                 key={course._id || index}
                 course={course}
-                onBuyNow={handleBuyNow}
+                // onBuyNow={handleBuyNow}
+                onBuyNow={() => handlePurchasedCourse(course._id)}
               />
             ))
           ) : (

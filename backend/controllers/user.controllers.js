@@ -192,85 +192,133 @@ export const getLoginUser = async (req, res) => {
 
 // Tasks
 
+// export const purchaseCourse = async (req, res) => {
+//   //  userID, courseId,  purchaseDate
+
+//   // take userid from the middleware
+//   const { userID, courseId } = req.body;
+//   console.log("UserId from PurchaseCourse", userID);
+//   console.log("CourseId from PurchaseCourse", courseId);
+//   // userId is coming from the User Model and courseId is coming from course model
+
+//   // tasks1. Validate Input Data
+//   // tasks2. Check User and Course Existence:
+//   // tasks3. Check if Already Purchased
+//   // tasks4. Only authenticate user can purchase the course
+//   // tasks5. Create Purchase Record
+//   // tasks6. Return a Success Response
+//   // TODO: what about the payment logic
+
+//   try {
+//     if (!userID || !courseId) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "All fields are required" });
+//     }
+
+//     const isUserIdExist = await User.findById(userID);
+//     if (!isUserIdExist) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "UserId Not Exist" });
+//     }
+
+//     const isCourseIdExist = await Course.findById(courseId);
+//     if (!isCourseIdExist) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Course Id not Exist" });
+//     }
+
+//     // checking is already course purchased
+
+//     const isAlreadyCoursePurchased = await Purchase.findOne({
+//       userID,
+//       courseId,
+//     });
+
+//     if (isAlreadyCoursePurchased) {
+//       return res
+//         .status(403)
+//         .json({ success: false, message: "Course has already been purchased" });
+//     }
+
+//     // only authenticated user can purchase the course
+
+//     const authUser = req.user?.id;
+//     console.log("AuthUser Id from Purchased Course", authUser);
+//     if (!authUser || authUser !== userID) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "You are not authenticated to purchase this course",
+//       });
+//     }
+
+//     const newPurchaseCourse = new Purchase({
+//       userID,
+//       courseId,
+//     });
+
+//     await newPurchaseCourse.save();
+
+//     return res
+//       .status(201)
+//       .json({ success: true, message: "Course Puchases successfully" });
+//   } catch (error) {
+//     console.log("Error in purchaseCourseRoutes Controllers", error);
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Internal Server Error" });
+//   }
+// };
+
+
+
+
+
+// Purchase Course new endpoint 
+
+
 export const purchaseCourse = async (req, res) => {
-  //  userID, courseId,  purchaseDate
-
-  // take userid from the middleware
-  const { userID, courseId } = req.body;
-  console.log("UserId from PurchaseCourse", userID);
-  console.log("CourseId from PurchaseCourse", courseId);
-  // userId is coming from the User Model and courseId is coming from course model
-
-  // tasks1. Validate Input Data
-  // tasks2. Check User and Course Existence:
-  // tasks3. Check if Already Purchased
-  // tasks4. Only authenticate user can purchase the course
-  // tasks5. Create Purchase Record
-  // tasks6. Return a Success Response
-  // TODO: what about the payment logic
-
+   // tasks check from the middleware user is authenticated 
+   // then check the couseId in the purchase Schema id the course Id exist the course already exist 
+   // check in the course Schema is the course exist 
   try {
-    if (!userID || !courseId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
+    const {courseId} = req.params;
+    const userId = req.user._id
+
+    const course = await Course.findById(courseId) 
+    if(!course) {
+      return res.status(404).json({success: false, message: "Course does not exist 😔"})
     }
 
-    const isUserIdExist = await User.findById(userID);
-    if (!isUserIdExist) {
-      return res
-        .status(400)
-        .json({ success: false, message: "UserId Not Exist" });
-    }
+   // checking is the course already purchased in the purchase Schema to prevent the duplicat purchase 
+   const isCourseAlreadyPurchase = await Purchase.findOne({ userID: userId ,courseId})
 
-    const isCourseIdExist = await Course.findById(courseId);
-    if (!isCourseIdExist) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Course Id not Exist" });
-    }
+   if(isCourseAlreadyPurchase) {
+    return res.status(403).json({success: false, message: "You already Purchased this Course"})
+   }
 
-    // checking is already course purchased
+   const newPurchase = new Purchase({
+    userID: userId,
+    courseId
+   })
 
-    const isAlreadyCoursePurchased = await Purchase.findOne({
-      userID,
-      courseId,
-    });
+   await newPurchase.save()
 
-    if (isAlreadyCoursePurchased) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Course has already been purchased" });
-    }
+   return res.status(200).json({success: true, message: "You successfully purchased this course 🎉", newPurchase})
 
-    // only authenticated user can purchase the course
-
-    const authUser = req.user?.id;
-    console.log("AuthUser Id from Purchased Course", authUser);
-    if (!authUser || authUser !== userID) {
-      return res.status(400).json({
-        success: false,
-        message: "You are not authenticated to purchase this course",
-      });
-    }
-
-    const newPurchaseCourse = new Purchase({
-      userID,
-      courseId,
-    });
-
-    await newPurchaseCourse.save();
-
-    return res
-      .status(201)
-      .json({ success: true, message: "Course Puchases successfully" });
   } catch (error) {
-    console.log("Error in purchaseCourseRoutes Controllers", error);
+    console.log("Error while purchasing the course", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
   }
-};
+  
+}
+
+
+
 
 export const getPurchaseCourse = async (req, res) => {
   try {
