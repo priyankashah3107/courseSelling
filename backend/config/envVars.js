@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import razorpay from "razorpay"
 
 dotenv.config();
 
@@ -8,4 +9,14 @@ export const env_Vars = {
   USER_SECRET_TOKEN: process.env.USER_SECRET_TOKEN,
   ADMIN_SECRET_TOKEN: process.env.ADMIN_SECRET_TOKEN,
   NODE_ENV: process.env.NODE_ENV,
+  RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET
 };
+
+
+export const CreateRazorpayInstance = () => {
+  return new razorpay({
+    key_id: env_Vars.RAZORPAY_KEY_ID,
+    key_secret: env_Vars.RAZORPAY_KEY_SECRET
+  })
+}

@@ -3,11 +3,97 @@ import bcrypt from "bcryptjs";
 import { wrapperofGenrateTokenAndCookie } from "../utils/generateTokenAndSetCookie.js";
 import { Course } from "../models/course.model.js";
 import Purchase from "../models/purchase.model.js";
-import { env_Vars } from "../config/envVars.js";
+import { CreateRazorpayInstance, env_Vars } from "../config/envVars.js";
+import Razorpay from "razorpay"
 
 const generateUserTokenAndCookie = wrapperofGenrateTokenAndCookie(
   env_Vars.USER_SECRET_TOKEN
 );
+
+
+
+
+let razorpayInstance = new Razorpay({
+  key_id: env_Vars.RAZORPAY_KEY_ID,
+  key_secret: env_Vars.RAZORPAY_KEY_SECRET,
+})
+
+// when i click on the button then it accept price and the courseId
+export const purchaseOrder = async (req, res) => {
+  const { courseId } = req.params;
+  const userId = req.user._id;
+
+  try {
+    // Fetch the course by its ID
+    const course = await Course.findById(courseId);
+
+    // If the course does not exist
+    if (!course) {
+      return res.status(404).json({ success: false, message: "Course not found" });
+    }
+
+    const price = course.price;
+
+    // Check if the course has already been purchased
+    const isCourseAlreadyPurchased = await Purchase.findOne({ userID: userId, courseId });
+
+    if (isCourseAlreadyPurchased) {
+      return res.status(409).json({ success: false, message: "You have already purchased this course" });
+    }
+
+    // Create a new purchase record (with 'Pending' status)
+    const newPurchase = new Purchase({
+      userID: userId,
+      courseId,
+      price,
+      status: "Pending",
+    });
+
+    // Save the new purchase record
+    await newPurchase.save();
+
+    const amount = price * 100; // Convert price to paise (Razorpay expects this)
+
+    // Create a Razorpay order
+    const order = await razorpayInstance.orders.create({
+      amount, // Amount in paise
+      currency: "INR",
+      receipt: `order_rcptid_${newPurchase._id}`, // Unique receipt ID
+      payment_capture: 1, // Auto-capture payment
+    });
+
+    // Check if the order creation was successful
+    if (!order || !order.id) {
+      return res.status(500).json({ success: false, message: "Error creating Razorpay order" });
+    }
+
+    // Update the new purchase record with the Razorpay order ID
+    newPurchase.orderId = order.id;
+
+    // Save the updated purchase record with the orderId (Single save operation)
+    await newPurchase.save();
+
+    // Send the order details back to the frontend to proceed with the payment
+    return res.status(200).json({
+      success: true,
+      message: "Order created successfully",
+      orderId: order.id, // Send the Razorpay order ID to frontend
+      amount,
+      course: {
+        name: course.name,
+        price: course.price,
+        _id: course._id,
+      }, // Send necessary course info to frontend
+    });
+
+  } catch (error) {
+    console.log("Error in purchaseOrder Controller Routes", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+
 export const signup = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
