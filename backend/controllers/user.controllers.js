@@ -11,8 +11,6 @@ const generateUserTokenAndCookie = wrapperofGenrateTokenAndCookie(
 );
 
 
-
-
 let razorpayInstance = new Razorpay({
   key_id:env_Vars.VITE_RAZORPAY_KEY_ID,
   key_secret:env_Vars.RAZORPAY_KEY_SECRET,
