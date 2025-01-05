@@ -22,6 +22,7 @@ import CreateCourse from "./components/ui/admin/CreateCourse";
 import UpdateCourse from "./components/ui/admin/UpdateCourse";
 
 const App = () => {
+  console.log("KEYID", import.meta.env.VITE_RAZORPAY_KEY_ID)
   const navigate = useNavigate()
   const location = useLocation()
   const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup", "/createcourse", "/update", "/update/:id"];

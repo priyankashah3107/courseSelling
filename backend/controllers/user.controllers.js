@@ -14,8 +14,8 @@ const generateUserTokenAndCookie = wrapperofGenrateTokenAndCookie(
 
 
 let razorpayInstance = new Razorpay({
-  key_id: env_Vars.RAZORPAY_KEY_ID,
-  key_secret: env_Vars.RAZORPAY_KEY_SECRET,
+  key_id:env_Vars.VITE_RAZORPAY_KEY_ID,
+  key_secret:env_Vars.RAZORPAY_KEY_SECRET,
 })
 
 // when i click on the button then it accept price and the courseId

@@ -165,7 +165,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRazorpay } from "react-razorpay";
 import useFetch from "../../hooks/useFetech.jsx";
-import { env_Vars } from "../../../../backend/config/envVars.js";
+// import { env_Vars } from "../../../../backend/config/envVars.js";
+
+// console.log("VITE RAZORPAyKEY ID", import.meta.env.VITE_RAZORPAY_KEY_ID)
 
 // Loading skeleton component for better UX
 const CourseSkeleton = () => (
@@ -211,10 +213,11 @@ const CourseCard = ({ course, onBuyNow }) => (
 
 const AllCourses = () => {
   const navigate = useNavigate();
+  const { Razorpay } = useRazorpay();
   const { data, loading, error } = useFetch("/api/v1/courses/getcourses");
 
-  const { Razorpay } = useRazorpay();
 
+  
   const handleBuyNow = () => {
     navigate("/buynow");
   };
@@ -245,7 +248,9 @@ const AllCourses = () => {
       const { amount, orderId } = data;
 
       const options = {
-        key: env_Vars.RAZORPAY_KEY_ID,
+        // key: env_Vars.VITE_RAZORPAY_KEY_ID,
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+       
         amount, 
         currency: "INR",
         name: "Course Name",

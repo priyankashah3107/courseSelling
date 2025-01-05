@@ -67,7 +67,7 @@ const Navbar = ({ authUser }) => {
             </>
           ) : (
             <>
-              <button
+              {/* <button
                 onClick={() => handleNavigation("/signup")}
                 className="bg-gradient-to-b from-[#def9fa] via-[#bef3f5] to-[#33bbcf] px-4 py-2 rounded text-black font-semibold"
               >
@@ -78,6 +78,19 @@ const Navbar = ({ authUser }) => {
                 className="bg-gradient-to-b from-[#def9fa] via-[#bef3f5] to-[#33bbcf] px-4 py-2 rounded text-black font-semibold"
               >
                 Login
+              </button> */}
+
+<button
+                onClick={() => handleNavigation("/signup")}
+                className="bg-gradient-to-b from-[#def9fa] via-[#bef3f5] to-[#33bbcf] px-4 py-2 rounded text-black font-semibold"
+              >
+                User
+              </button>
+              <button
+                onClick={() => handleNavigation("/adminsignup")}
+                className="bg-gradient-to-b from-[#def9fa] via-[#bef3f5] to-[#33bbcf] px-4 py-2 rounded text-black font-semibold"
+              >
+                Admin
               </button>
             </>
           )}
@@ -124,13 +137,13 @@ const Navbar = ({ authUser }) => {
                 onClick={() => handleNavigation("/signup")}
                 className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded"
               >
-                Sign Up
+                User
               </button>
               <button
-                onClick={() => handleNavigation("/login")}
+                onClick={() => handleNavigation("/adminsignup")}
                 className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded"
               >
-                Login
+                Admin
               </button>
             </>
           )}
