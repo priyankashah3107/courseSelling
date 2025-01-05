@@ -248,7 +248,7 @@ const AllCourses = () => {
       const { amount, orderId } = data;
 
       const options = {
-        // key: env_Vars.VITE_RAZORPAY_KEY_ID,
+        // key: env_Vars.VITE_RAZORPAY_KEY_ID,  
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount, 
         currency: "INR",
