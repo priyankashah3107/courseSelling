@@ -3,6 +3,9 @@ import User from "../models/user.model.js";
 import { Course } from "../models/course.model.js";
 import Category from "../models/categories.model.js";
 import Purchase from "../models/purchase.model.js";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { env_Vars } from "../config/envVars.js";
 // finding solution for creator and category category problem solve ,
 // finding creator solution
 // only admin is own this endpoints
@@ -81,155 +84,145 @@ import Purchase from "../models/purchase.model.js";
 //   }
 // };
 
+// s3 upload
 
+const s3Client = new S3Client({
+  region: "ap-south-1",
+  credentials: {
+    accessKeyId: env_Vars.ACCESSKEYID,
+    secretAccessKey: env_Vars.SECRETACCESSKEY,
+  },
+});
 
 export const createCourses = async (req, res) => {
   try {
-    const { title, image, description, price, category } = req.body;
-    if (!title || !image || !description || !price) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All Feilds are Required" });
+    const { fileName, fileType } = req.body;
+
+    console.log("FileName", fileName);
+    console.log("FileType", fileType);
+
+    if (!fileName || !fileType) {
+      return res.status(400).json({ message: "File details are required" });
     }
 
-    // cheking is title is already exist
+    // Sanitize the filename and ensure unique names
+    const sanitizedFileName = encodeURIComponent(fileName);
+    const uniqueKey = `upload/course/${Date.now()}-${sanitizedFileName}`;
 
-    const isTitleExist = await Course.findOne({ title });
- 
-    if (isTitleExist) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Title Already Exist" });
-    }
-
-    const categoryData = await Category.findOne({ title: category });
-
-    if (!categoryData) {
-      return res.status(404).json({
-        success: false,
-        message: "Category not found. Please use a valid category title.",
-      });
-    }
-
-    const purchased = await Purchase.find()
-
-    if(!purchased) {
-      return res.status(404).json({success: false, message: "Unable to find the Purchases Course"})
-    }
-
-    // creator of the course
-    const creatorData = req.user; // This value is coming from middleware which is protectRoute
-    console.log("CReated Daata", req.user)
-    console.log("CreatorData from CreateCourses", creatorData.username);
-    if (!creatorData) {
-      return res
-        .status(400)
-        .json({ success: false, json: "Unable to find the Creator" });
-    }
-
-    if (price <= 0 || price >= 5000) {
-      return res
-        .status(400)
-        .json({ message: "Price should be greater than 0 and less 5000" });
-    }
-
-    if (description.length === 10) {
-      return res.status(400).json({
-        success: false,
-        message: "Description length must be at least 10 characters",
-      });
-    }
-
-    const newCourse = new Course({
-      title,
-      image,
-      description,
-      price,
-      category: categoryData._id,
-      creator: creatorData._id,
-      purchasedList: purchased
-      // username: creatorData.username, // unable to get username
+    const command = new PutObjectCommand({
+      Bucket: "imgprivate", // Your bucket name
+      Key: uniqueKey,
+      ContentType: fileType,
     });
 
-    await newCourse.save();
+    console.log("command", command);
+    const presignedUrl = await getSignedUrl(s3Client, command, {
+      expiresIn: 3600,
+    });
 
-    return res.status(201).json({
-      success: true,
-      message: "Courses Created Successfully",
-      course: newCourse,
+    console.log("presignedUrl", presignedUrl);
+    res.status(200).json({
+      presignedUrl,
+      fileKey: uniqueKey,
     });
   } catch (error) {
-    console.log("Error in Create Routes controllers", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
+    console.error("Error generating presigned URL:", error);
+    res.status(500).json({
+      message: "Failed to generate presigned URL",
+      error: error.message,
+    });
   }
 };
 
+// jhgj
 
+// export const createCourses = async (req, res) => {
+//   try {
+//     const { title, image, description, price, category } = req.body;
+//     if (!title || !image || !description || !price) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "All Feilds are Required" });
+//     }
 
+//     // cheking is title is already exist
 
+//     const isTitleExist = await Course.findOne({ title });
 
+//     if (isTitleExist) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Title Already Exist" });
+//     }
 
+//     const categoryData = await Category.findOne({ title: category });
 
+//     if (!categoryData) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Category not found. Please use a valid category title.",
+//       });
+//     }
 
+//     const purchased = await Purchase.find();
 
+//     if (!purchased) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Unable to find the Purchases Course",
+//       });
+//     }
 
+//     // creator of the course
+//     const creatorData = req.user; // This value is coming from middleware which is protectRoute
+//     console.log("CReated Daata", req.user);
+//     console.log("CreatorData from CreateCourses", creatorData.username);
+//     if (!creatorData) {
+//       return res
+//         .status(400)
+//         .json({ success: false, json: "Unable to find the Creator" });
+//     }
 
+//     if (price <= 0 || price >= 5000) {
+//       return res
+//         .status(400)
+//         .json({ message: "Price should be greater than 0 and less 5000" });
+//     }
 
+//     if (description.length === 10) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Description length must be at least 10 characters",
+//       });
+//     }
 
+//     const newCourse = new Course({
+//       title,
+//       image,
+//       description,
+//       price,
+//       category: categoryData._id,
+//       creator: creatorData._id,
+//       purchasedList: purchased,
+//       // username: creatorData.username, // unable to get username
+//     });
 
+//     await newCourse.save();
 
+//     return res.status(201).json({
+//       success: true,
+//       message: "Courses Created Successfully",
+//       course: newCourse,
+//     });
+//   } catch (error) {
+//     console.log("Error in Create Routes controllers", error);
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Internal Server Error" });
+//   }
+// };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// written by me 
+// written by me
 // export const updateCourseById = async (req, res) => {
 //   const { id } = req.params;
 //   const { title, image, description, price, category } = req.body;
@@ -291,8 +284,6 @@ export const createCourses = async (req, res) => {
 //     });
 //   }
 // };
-
-
 
 // gpt
 export const updateCourseById = async (req, res) => {
@@ -363,44 +354,6 @@ export const updateCourseById = async (req, res) => {
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // export const updateCourseById = async (req, res) => {
 //   const { id } = req.params;
@@ -536,8 +489,6 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
-
-
 // I want to group all the course on the behalf of the creator
 // high level mongodb give by gpt
 // export const getAllCourses = async (req, res) => {
@@ -623,13 +574,11 @@ export const getCourseById = async (req, res) => {
 //   }
 // };
 
-
-
 export const getCoursesByUserId = async (req, res) => {
   try {
     // Fetch all courses that are created by the authenticated user (req.user._id)
     const createdCourses = await Course.find({ creator: req.user._id });
-     
+
     if (!createdCourses || createdCourses.length === 0) {
       return res.status(404).json({
         success: false,
