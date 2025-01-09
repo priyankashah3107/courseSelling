@@ -3,7 +3,13 @@ import Navbar from "./components/ui/Navbar";
 import styles from "./style";
 import Hero from "./components/ui/Hero";
 import HomePage from "./components/ui/HomePage";
-import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { Home } from "lucide-react";
 import SignupPage from "./components/ui/SignupPage";
 import LoginPage from "./components/ui/LoginPage";
@@ -22,46 +28,59 @@ import CreateCourse from "./components/ui/admin/CreateCourse";
 import UpdateCourse from "./components/ui/admin/UpdateCourse";
 
 const App = () => {
-  console.log("KEYID", import.meta.env.VITE_RAZORPAY_KEY_ID) 
-  const navigate = useNavigate()
-  const location = useLocation()
-  const excludedRoutes = ["/admin", "/adminlogin", "/adminsignup", "/createcourse", "/update", "/update/:id"];
-  
-  const {data: authUser, isLoading, error, isError} = 	useQuery({
+  const navigate = useNavigate();
+  const location = useLocation();
+  const excludedRoutes = [
+    "/admin",
+    "/adminlogin",
+    "/adminsignup",
+    "/createcourse",
+    "/update",
+    "/update/:id",
+  ];
+
+  const {
+    data: authUser,
+    isLoading,
+    error,
+    isError,
+  } = useQuery({
     // we use queryKey to give a unique name to out query and refer to it later
     queryKey: ["authUser"],
     queryFn: async () => {
       try {
         const res = await fetch("/api/v1/auth/me");
         const data = await res.json();
-        if(data.error) return null;
-        if(!res.ok) {
+        if (data.error) return null;
+        if (!res.ok) {
           throw new Error(data.error || "Something went wrong");
         }
         console.log("AuthUser is here", data);
         return data;
       } catch (error) {
-        return null
+        return null;
       }
     },
-    retry: false
-  })
-
+    retry: false,
+  });
 
   if (isLoading) {
-    return <div> <LoadingSkeleton /> </div>; // Show loading skeleton while fetching
+    return (
+      <div>
+        {" "}
+        <LoadingSkeleton />{" "}
+      </div>
+    ); // Show loading skeleton while fetching
   }
 
-
   // uncomment this for authenticated authUser
-
 
   // const {data: adminUser} = 	useQuery({
   //   queryKey: ["adminUser"],
   //   queryFn: async () => {
   //     try {
   //       // const res = await fetch("/api/v1/auth/me"); same mistake
-  //       const res = await fetch("/api/v1/admin/me"); 
+  //       const res = await fetch("/api/v1/admin/me");
 
   //       const data = await res.json();
   //       if(data.error) return null;
@@ -77,42 +96,39 @@ const App = () => {
   //   retry: false
   // })
 
-
   // If the user is not authenticated, redirect to login page
   // if (isError || !authUser) {
   //   navigate("/login")
-    
+
   // }
 
-  
   // // If the user is not authenticated, redirect to login page
   // if (isError || !adminUser) {
   //   navigate("/adminlogin")
-    
-  // }
 
+  // }
 
   return (
     <div>
       {/* <Navbar authUser={authUser} /> */}
       {/* {location.pathname !== "/admin"  && <Navbar authUser={authUser} />} */}
-      {!excludedRoutes.includes(location.pathname) && <Navbar authUser={authUser}  />}
+      {!excludedRoutes.includes(location.pathname) && (
+        <Navbar authUser={authUser} />
+      )}
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignupPage />  }/>
-        <Route path="/login" element={<LoginPage />  }/>
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/allcourses" element={<AllCourses />} />
         <Route path="/mypurchases" element={<MyPurchases />} />
         {/* <Route path="/mypurchases/:userID" element={<MyPurchases />} /> */}
         <Route path="/subcontent" element={<SubContent />} />
         <Route path="/buynow" element={<BuyNow />} />
-        <Route path="/admin" element={<AdminHomePage />}  />
-        <Route path="/adminsignup" element={<AdminSignupPage />}  />
-        <Route path="/adminlogin" element={<AdminLoginPage />}  />
-        <Route path="/createcourse" element={<CreateCourse />}  />
-        <Route path="/update/:id" element={<UpdateCourse />}  />
-        
-
+        <Route path="/admin" element={<AdminHomePage />} />
+        <Route path="/adminsignup" element={<AdminSignupPage />} />
+        <Route path="/adminlogin" element={<AdminLoginPage />} />
+        <Route path="/createcourse" element={<CreateCourse />} />
+        <Route path="/update/:id" element={<UpdateCourse />} />
       </Routes>
       <Toaster />
     </div>
@@ -121,40 +137,7 @@ const App = () => {
 
 export default App;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// NOT WORKING WITH AXIOS.GET BECAUSE THE AUTHENTICATED FUNCTION REDERDING AGAIN AND AGAIN AND CHECK THE AUTHUSER WILL WILL CAUSE THE LOGIN PAGE COMPONENT ERROR 
-
+// NOT WORKING WITH AXIOS.GET BECAUSE THE AUTHENTICATED FUNCTION REDERDING AGAIN AND AGAIN AND CHECK THE AUTHUSER WILL WILL CAUSE THE LOGIN PAGE COMPONENT ERROR
 
 // import React from "react";
 // import { Navigate, Route, Routes } from "react-router-dom";
@@ -178,7 +161,7 @@ export default App;
 //       throw Error;
 //     }
 //     return response.data; // return user data if authenticated
-    
+
 //   } catch (error) {
 //     // If error occurs (e.g., 401 Unauthorized), return null
 //     console.log("User is not authenticated", error);
@@ -221,9 +204,7 @@ export default App;
 
 // export default App;
 
-
-
-// useFetch is also not working 
+// useFetch is also not working
 
 // import React, { useState } from "react";
 // import Navbar from "./components/ui/Navbar";
@@ -274,22 +255,6 @@ export default App;
 // };
 
 // export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React from "react";
 // import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
@@ -375,8 +340,6 @@ export default App;
 // };
 
 // export default App;
-
-
 
 // import React from "react";
 // import { Route, Routes, useLocation } from "react-router-dom";

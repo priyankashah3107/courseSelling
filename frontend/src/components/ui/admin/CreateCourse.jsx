@@ -390,6 +390,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 function CreateCourse() {
   const navigate = useNavigate();
@@ -508,7 +509,9 @@ function CreateCourse() {
       setFile(null);
     } catch (err) {
       console.error("Error creating course:", err);
-      setError("Failed to create course. Please try again.");
+      // setError("Failed to create course. Please try again.")
+      // setError(err.message);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
