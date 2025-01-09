@@ -70,8 +70,8 @@
 //     );
 //   }
 
-//   // getThe course by their courseId 
-//   // purchased the course by their courseId 
+//   // getThe course by their courseId
+//   // purchased the course by their courseId
 
 //   const {mutate, isError, isPending} = useMutation({
 //      mutationFn:  async (courseId) => {
@@ -83,16 +83,15 @@
 //           console.log("Error while Purchasing the course", error)
 //           throw error
 //         }
-//      }, 
+//      },
 //     onSuccess: () => {
 //       toast.success("You Successfully Purchased the Course 🎉")
-//     }, 
+//     },
 //     onError: () => {
 //       toast.error("Error While Purchasing the course 😔")
 //     }
-     
-//   })
 
+//   })
 
 //   const handlePurchasedCourse = (courseId) => {
 //     mutate(courseId)
@@ -150,11 +149,7 @@
 
 // export default AllCourses;
 
-
-
-
-
-
+//akjds
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -216,8 +211,6 @@ const AllCourses = () => {
   const { Razorpay } = useRazorpay();
   const { data, loading, error } = useFetch("/api/v1/courses/getcourses");
 
-
-  
   const handleBuyNow = () => {
     navigate("/buynow");
   };
@@ -236,7 +229,9 @@ const AllCourses = () => {
   const { mutate, isError, isPending } = useMutation({
     mutationFn: async (courseId) => {
       try {
-        const res = await axios.post(`/api/v1/purchased/purchaseorder/${courseId}`);
+        const res = await axios.post(
+          `/api/v1/purchased/purchaseorder/${courseId}`
+        );
         return res.data; // Contains orderId and amount
       } catch (error) {
         console.log("Error while purchasing the course", error);
@@ -248,9 +243,9 @@ const AllCourses = () => {
       const { amount, orderId } = data;
 
       const options = {
-        // key: env_Vars.VITE_RAZORPAY_KEY_ID,  
+        // key: env_Vars.VITE_RAZORPAY_KEY_ID,
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount, 
+        amount,
         currency: "INR",
         name: "Course Name",
         description: "Course Payment",
@@ -291,9 +286,7 @@ const AllCourses = () => {
             className="font-bold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-[#26D0CE] to-[#1A2980] "
           />
           {!loading && data?.content?.length > 0 && (
-            <p className="mt-4 text-gray-400">
-              Explore our courses
-            </p>
+            <p className="mt-4 text-gray-400">Explore our courses</p>
           )}
         </div>
 
