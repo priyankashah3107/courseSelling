@@ -86,53 +86,53 @@ import { env_Vars } from "../config/envVars.js";
 
 // s3 upload
 
-const s3Client = new S3Client({
-  region: "ap-south-1",
-  credentials: {
-    accessKeyId: env_Vars.ACCESSKEYID,
-    secretAccessKey: env_Vars.SECRETACCESSKEY,
-  },
-});
+// const s3Client = new S3Client({
+//   region: "ap-south-1",
+//   credentials: {
+//     accessKeyId: env_Vars.ACCESSKEYID,
+//     secretAccessKey: env_Vars.SECRETACCESSKEY,
+//   },
+// });
 
-export const createCourses = async (req, res) => {
-  try {
-    const { fileName, fileType } = req.body;
+// export const createCourses = async (req, res) => {
+//   try {
+//     const { fileName, fileType } = req.body;
 
-    console.log("FileName", fileName);
-    console.log("FileType", fileType);
+//     console.log("FileName", fileName);
+//     console.log("FileType", fileType);
 
-    if (!fileName || !fileType) {
-      return res.status(400).json({ message: "File details are required" });
-    }
+//     if (!fileName || !fileType) {
+//       return res.status(400).json({ message: "File details are required" });
+//     }
 
-    // Sanitize the filename and ensure unique names
-    const sanitizedFileName = encodeURIComponent(fileName);
-    const uniqueKey = `upload/course/${Date.now()}-${sanitizedFileName}`;
+//     // Sanitize the filename and ensure unique names
+//     const sanitizedFileName = encodeURIComponent(fileName);
+//     const uniqueKey = `upload/course/${Date.now()}-${sanitizedFileName}`;
 
-    const command = new PutObjectCommand({
-      Bucket: "imgprivate", // Your bucket name
-      Key: uniqueKey,
-      ContentType: fileType,
-    });
+//     const command = new PutObjectCommand({
+//       Bucket: "imgprivate", // Your bucket name
+//       Key: uniqueKey,
+//       ContentType: fileType,
+//     });
 
-    console.log("command", command);
-    const presignedUrl = await getSignedUrl(s3Client, command, {
-      expiresIn: 3600,
-    });
+//     console.log("command", command);
+//     const presignedUrl = await getSignedUrl(s3Client, command, {
+//       expiresIn: 3600,
+//     });
 
-    console.log("presignedUrl", presignedUrl);
-    res.status(200).json({
-      presignedUrl,
-      fileKey: uniqueKey,
-    });
-  } catch (error) {
-    console.error("Error generating presigned URL:", error);
-    res.status(500).json({
-      message: "Failed to generate presigned URL",
-      error: error.message,
-    });
-  }
-};
+//     console.log("presignedUrl", presignedUrl);
+//     res.status(200).json({
+//       presignedUrl,
+//       fileKey: uniqueKey,
+//     });
+//   } catch (error) {
+//     console.error("Error generating presigned URL:", error);
+//     res.status(500).json({
+//       message: "Failed to generate presigned URL",
+//       error: error.message,
+//     });
+//   }
+// };
 
 // jhgj
 
@@ -597,5 +597,92 @@ export const getCoursesByUserId = async (req, res) => {
       success: false,
       message: "Internal Server Error",
     });
+  }
+};
+
+export const createCourses = async (req, res) => {
+  try {
+    const { title, thumbnail, description, price, category } = req.body;
+    console.log("Body", req.body);
+    // Validate required fields
+    if (!title || !description || !price || !category) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
+    }
+
+    // Check if the title already exists
+    const isTitleExist = await Course.findOne({ title });
+    if (isTitleExist) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Title already exists" });
+    }
+
+    // Validate the category
+    const categoryData = await Category.findOne({ title: category });
+    if (!categoryData) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found. Please use a valid category title.",
+      });
+    }
+
+    // Fetch purchased courses
+    const purchased = await Purchase.find();
+    if (!purchased) {
+      return res.status(404).json({
+        success: false,
+        message: "Unable to find the purchased courses",
+      });
+    }
+
+    // Validate the creator of the course
+    const creatorData = req.user; // Assuming `req.user` is populated by middleware
+    if (!creatorData) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Unable to find the creator" });
+    }
+
+    // Validate price
+    if (price <= 0 || price >= 5000) {
+      return res.status(400).json({
+        success: false,
+        message: "Price should be greater than 0 and less than 5000",
+      });
+    }
+
+    // Validate description length
+    if (description.length < 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Description length must be at least 10 characters",
+      });
+    }
+
+    // Create a new course
+    const newCourse = new Course({
+      title,
+      image: thumbnail || undefined,
+      description,
+      price,
+      category: categoryData._id,
+      creator: creatorData._id,
+      purchasedList: purchased,
+    });
+
+    await newCourse.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Course created successfully",
+      course: newCourse,
+    });
+  } catch (error) {
+    console.error("Error in createCourses controller:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
