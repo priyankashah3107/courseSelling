@@ -43,34 +43,21 @@ This is a course-selling application where users can browse and purchase courses
 
 
 Create a .env file:
-
-Copy .env.example and rename it to .env.
+.env.example and rename it to .env.
 Install dependencies for the backend:
 
-bash
-Copy code
 cd backend
 npm install
 Run the backend server:
-
-bash
-Copy code
 npm run dev
+
 Navigate to the frontend directory:
 
-bash
-Copy code
 cd frontend
 Install frontend dependencies:
 
-bash
-Copy code
 npm install
 Run the frontend:
-
-bash
-Copy code
-
 npm run dev
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
