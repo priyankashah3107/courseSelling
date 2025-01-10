@@ -48,15 +48,14 @@
 // );
 
 // const MyPurchases = () => {
-//   const { userID } = useParams()
+//   const { userID } = useParams();
 //   const navigate = useNavigate();
 //   const { data, loading, error } = useFetch(
 //     // `http://localhost:8080/api/v1/purchased/purchasedcourses/${userID}`
 //     `http://localhost:8080/api/v1/purchased/purchasedcourses`
 //   );
 
-//   console.log("Data kjdhjdhkdhskj ", data)
-
+//   console.log("Data kjdhjdhkdhskj ", data);
 
 //   // const {data, isLoading, isError, error} = useQuery({
 //   //   queryKey: "authUser",
@@ -103,16 +102,16 @@
 //             [...Array(6)].map((_, index) => <PurchasesSkeleton key={index} />)
 //           ) : data?.purchasedCourses?.length > 0 ? (
 //             data.purchasedCourses.map((course, index) => {
-//               console.log("Coursesss", course)
+//               console.log("Coursesss", course);
 //               return (
-              
-//               <PurchaseCard
-//                 key={course._id || index}
-//                 purchasedCourses={course.courseId}
-//                 course={course}
-//                 onBuyNow={handleSubContent}
-//               />)
-//               })
+//                 <PurchaseCard
+//                   key={course._id || index}
+//                   purchasedCourses={course.courseId}
+//                   course={course}
+//                   onBuyNow={handleSubContent}
+//                 />
+//               );
+//             })
 //           ) : (
 //             <div className="col-span-full text-center py-20">
 //               <div className="inline-block p-6 rounded-lg bg-gray-800/50 backdrop-blur-sm">
@@ -133,23 +132,13 @@
 
 // export default MyPurchases;
 
-
-
-
-
-
-
-
-
-
-
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetech";
 import Button from "./Button";
 import { formatCurrency } from "../../utils/formatCurrency.js";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 // Loading skeleton component for better UX
 const PurchasesSkeleton = () => (
@@ -194,23 +183,99 @@ const PurchaseCard = ({ purchasedCourses, onBuyNow }) => (
 );
 
 const MyPurchases = () => {
-  const { userID } = useParams()
+  const { userID } = useParams();
   const navigate = useNavigate();
-  const { data, loading, error } = useFetch(
-    // `http://localhost:8080/api/v1/purchased/purchasedcourses/${userID}`
-    `http://localhost:8080/api/v1/purchased/purchasedcourses`
-  );
+  const [data, setData] = useState([]); // State to store courses
+  const [isLoading, setLoading] = useState(true); // State to track loading status
+  const [error, setError] = useState(null); // State to track errors
+  const [file, setFile] = useState(null);
+  // const { data, loading, error } = useFetch(
+  //   // `http://localhost:8080/api/v1/purchased/purchasedcourses/${userID}`
+  //   `http://localhost:8080/api/v1/purchased/purchasedcourses`
+  // );
 
-  console.log("Data kjdhjdhkdhskj ", data)
+  // console.log("Data kjdhjdhkdhskj ", data)
+
+  const getAllMyPurchaseCourses = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("/api/v1/purchased/purchasedcourses", {
+        withCredentials: true,
+      });
+      // console.log("Response from GET /api/v1/purchased/purchasedcourses:", res);
+      const courses = res.data?.userPurchasedList || [];
+      console.log("Courses:", res.data?.userPurchasedList);
 
 
-  // const {data, isLoading, isError, error} = useQuery({
-  //   queryKey: "authUser",
-  //   queryFn: async () => {
+      // Debugging 
+      // const b = res.data?.userPurchasedList.map((courses) => {
+      //   const abc = courses.courseId;
+      //   console.log("Abc", abc?.image);
+      // });
 
+      // console.log("B", b);
+      // if (!courses) {
+      //   throw new Error("No courses found in the response");
+      // }
+
+      // Fetch signed URLs for each image dynamically
+      const signedUrls = await Promise.all(
+        res.data?.userPurchasedList.map(async (course) => {
+          if (course?.courseId?.image) {
+            const filename = course?.courseId?.image.split("/").pop();
+            const key = `thumbnails/exampleUser/${filename}`;
+            console.log("Checking key in s3:", key);
+
+            try {
+              const signedUrlRes = await axios.post("/api/v1/get-signed-url", {
+                bucket: "imgprivate",
+                key: `thumbnails/exampleUser/${filename}`,
+              });
+              console.log("Signed Url Response:", signedUrlRes.data?.url);
+              return { ...course, image: signedUrlRes.data?.url };
+            } catch (error) {
+              console.log(
+                `Error fetching signed URL for image: ${course.image}`,
+                error
+              );
+              return course;
+            }
+          }
+          return course;
+        })
+      );
+
+      setData(signedUrls);
+      console.log("data is:", data);
+    } catch (error) {
+      console.error("Failed to load courses.", error);
+      setError("Failed to load courses.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllMyPurchaseCourses();
+  }, []);
+
+  // const getAllMyPurchasesCourse = async () => {
+  //   try {
+  //     // const res = await axios.get("/api/v1/purchased/purchasedcourses");
+  //     // console.log("Response is", res.data?.userPurchasedList);
+  //     const signedUrlRes = await axios.post("/api/v1/get-signed-url", {
+  //       bucket: "imgprivate",
+  //       key: `thumbnails/exampleUser/`,
+  //     });
+  //     console.log("PresignUserl", signedUrlRes);
+  //   } catch (error) {
+  //     console.log("errr", error);
   //   }
-  // })
+  // };
 
+  // useEffect(() => {
+  //   getAllMyPurchasesCourse();
+  // }, []);
   const handleSubContent = () => {
     navigate("/subcontent");
   };
@@ -236,7 +301,7 @@ const MyPurchases = () => {
             size="large"
             className="font-bold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-[#26D0CE] to-[#1A2980]"
           />
-          {!loading && data?.userPurchasedList?.length > 0 && (
+          {!isLoading && data?.userPurchasedList?.length > 0 && (
             <p className="mt-4 text-gray-400">
               {/* Explore our selection of {data.content.length} courses */}
               {/* Explore our courses */}
@@ -245,26 +310,26 @@ const MyPurchases = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {loading ? (
+          {isLoading ? (
             [...Array(6)].map((_, index) => <PurchasesSkeleton key={index} />)
-          ) : data?.userPurchasedList?.length > 0 ? (
-            data.userPurchasedList.map((purchase, index) => {
+          ) : data?.userPurchasedList?.courseId.length > 0 ? (
+            data?.userPurchasedList?.courseId.map((purchase, index) => {
               // console.log("Coursesss", course)
               const courseDetails = purchase.courseId;
-              console.log("CourseDetails from MyPurchases", courseDetails)
+              console.log("CourseDetails from MyPurchases", courseDetails);
 
-              if(!courseDetails) {
-                return null
+              if (!courseDetails) {
+                return null;
               }
               return (
-              
-              <PurchaseCard
-                key={purchase._id || index}
-                purchasedCourses={courseDetails}
-                purchase={purchase}
-                onBuyNow={handleSubContent}
-              />)
-              })
+                <PurchaseCard
+                  key={purchase._id || index}
+                  purchasedCourses={courseDetails}
+                  purchase={purchase}
+                  onBuyNow={handleSubContent}
+                />
+              );
+            })
           ) : (
             <div className="col-span-full text-center py-20">
               <div className="inline-block p-6 rounded-lg bg-gray-800/50 backdrop-blur-sm">
@@ -284,6 +349,3 @@ const MyPurchases = () => {
 };
 
 export default MyPurchases;
-
-
-

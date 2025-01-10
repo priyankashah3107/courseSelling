@@ -19,7 +19,7 @@
 //   useEffect(() => {
 //     const fetchCourseDetails = async () => {
 //       try {
-//          
+//
 //         const res = await axios.get(`/api/v1/courses/particulatcourse/${id}`, { withCredentials: true });
 
 //         setCourse(res.data.content);
@@ -62,46 +62,46 @@
 //         <form onSubmit={handleSubmit}>
 //           <div>
 //             <label>Title</label>
-//             <input 
-//               type="text" 
-//               value={title} 
-//               onChange={(e) => setTitle(e.target.value)} 
-//               required 
+//             <input
+//               type="text"
+//               value={title}
+//               onChange={(e) => setTitle(e.target.value)}
+//               required
 //             />
 //           </div>
 //           <div>
 //             <label>Image</label>
-//             <input 
-//               type="text" 
-//               value={image} 
-//               onChange={(e) => setImage(e.target.value)} 
-//               required 
+//             <input
+//               type="text"
+//               value={image}
+//               onChange={(e) => setImage(e.target.value)}
+//               required
 //             />
 //           </div>
 //           <div>
 //             <label>Description</label>
-//             <textarea 
-//               value={description} 
-//               onChange={(e) => setDescription(e.target.value)} 
-//               required 
+//             <textarea
+//               value={description}
+//               onChange={(e) => setDescription(e.target.value)}
+//               required
 //             />
 //           </div>
 //           <div>
 //             <label>Price</label>
-//             <input 
-//               type="number" 
-//               value={price} 
-//               onChange={(e) => setPrice(e.target.value)} 
-//               required 
+//             <input
+//               type="number"
+//               value={price}
+//               onChange={(e) => setPrice(e.target.value)}
+//               required
 //             />
 //           </div>
 //           {/* <div>
 //             <label>Category</label>
-//             <input 
-//               type="text" 
-//               value={category} 
-//               onChange={(e) => setCategory(e.target.value)} 
-//               required 
+//             <input
+//               type="text"
+//               value={category}
+//               onChange={(e) => setCategory(e.target.value)}
+//               required
 //             />
 //           </div> */}
 //           <button type="submit">Update Course</button>
@@ -115,35 +115,33 @@
 
 // export default UpdateCourse;
 
-
-
-
-
-import { useMutation, useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const fetchCourseDetails = async (id) => {
   try {
-    const res = await axios.get(`/api/v1/courses/particulatcourse/${id}`, { withCredentials: true })
-    console.log("fetchCourseDetails from UpdateCourse Details", res)
+    const res = await axios.get(`/api/v1/courses/particulatcourse/${id}`, {
+      withCredentials: true,
+    });
+    console.log("fetchCourseDetails from UpdateCourse Details", res);
     return res.data;
   } catch (error) {
-    console.log("Error while fetching the FetchCourseDeatils", error)
-    throw error
+    console.log("Error while fetching the FetchCourseDeatils", error);
+    throw error;
   }
-}
+};
 
 const UpdateCourse = () => {
   const { id } = useParams(); // Get the courseId from the URL
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     image: "",
     description: "",
     price: "",
-    category: ""
+    category: "",
   });
 
   const { data, isLoading, isError, error } = useQuery({
@@ -160,51 +158,52 @@ const UpdateCourse = () => {
         image: "", // You can handle file upload separately if needed
         description: data.content.description || "",
         price: data.content.price || "",
-        category: data.content.category || ""
+        category: data.content.category || "",
       });
     }
   }, [data]); // Run this effect when `data` is fetched
 
+  // update the course by their courseId
 
-
-
-// update the course by their courseId 
-
-const {mutate} = useMutation({
-    mutationFn: async({title, image, description, price, category}) => {
+  const { mutate } = useMutation({
+    mutationFn: async ({ title, image, description, price, category }) => {
       try {
         const res = await axios.patch(`/api/v1/courses/updatecourse/${id}`, {
-          title, image, description, price, category
-        })
-        console.log("Particular Course from AdminHome Page", res)
-        return res.data
+          title,
+          image,
+          description,
+          price,
+          category,
+        });
+        console.log("Particular Course from AdminHome Page", res);
+        return res.data;
       } catch (error) {
-        console.log("error to update the Course", error)
-        throw error
+        console.log("error to update the Course", error);
+        throw error;
       }
-    }, 
+    },
     onSuccess: () => {
-      toast.success("Course Updated Successfully 🎉")
-    }, 
+      toast.success("Course Updated Successfully 🎉");
+    },
     onError: () => {
-      toast.error(`Course Updation Failed: ${err.response?.data?.message || err.message} `)
-    }
-})
-
+      toast.error(
+        `Course Updation Failed: ${err.response?.data?.message || err.message} `
+      );
+    },
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Updated Course Data", formData);
-    mutate(formData)
-    navigate("/admin")
-    
+    mutate(formData);
+    navigate("/admin");
+
     // Send `formData` to the server (e.g., via a mutation for updating the course)
-  }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
-
+  };
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -216,7 +215,9 @@ const {mutate} = useMutation({
   return (
     <div className="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-2xl">
-        <h1 className="text-lg sm:text-3xl font-semibold mb-4 text-center">Update Course</h1>
+        <h1 className="text-lg sm:text-3xl font-semibold mb-4 text-center">
+          Update Course
+        </h1>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <label className="flex flex-col">
@@ -288,8 +289,12 @@ const {mutate} = useMutation({
               <option value="UI/UX">UI/UX</option>
               <option value="Web Designing">Web Designing</option>
               <option value="Web3">Web3</option>
-              <option value="Artificial Intelligence">Artificial Intelligence</option>
-              <option value="Data Structure and Algorithms">Data Structure and Algorithms</option>
+              <option value="Artificial Intelligence">
+                Artificial Intelligence
+              </option>
+              <option value="Data Structure and Algorithms">
+                Data Structure and Algorithms
+              </option>
             </select>
           </label>
 
@@ -304,6 +309,6 @@ const {mutate} = useMutation({
       </div>
     </div>
   );
-}
+};
 
 export default UpdateCourse;
