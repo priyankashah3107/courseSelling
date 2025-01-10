@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-
 const logoutUser = async () => {
   try {
     const res = await axios.delete("/api/v1/admin/logout");
@@ -20,7 +19,7 @@ const AdminNavbar = () => {
   const { mutate, isError, error } = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      navigate("/adminlogin"); 
+      navigate("/adminlogin");
     },
   });
 
@@ -28,19 +27,20 @@ const AdminNavbar = () => {
     mutate();
   };
 
- 
-  const {data: adminUser} = useQuery({
+  const { data: adminUser } = useQuery({
     queryKey: ["adminUser"],
-    queryFn: async() => {
+    queryFn: async () => {
       try {
         // const res = await fetch("/api/v1/auth/me",    myMistake
         const res = await fetch("/api/v1/admin/me", {
-           credentials: "include", // Ensure cookies are sent
-          
+          credentials: "include", // Ensure cookies are sent
         });
         const data = await res.json();
         if (!res.ok || data.error) {
-          console.error("Error fetching admin user:", data.error || "Unknown error");
+          console.error(
+            "Error fetching admin user:",
+            data.error || "Unknown error"
+          );
           return null;
         }
         return data;
@@ -49,8 +49,8 @@ const AdminNavbar = () => {
         return null;
       }
     },
-    retry: false
-  })
+    retry: false,
+  });
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -75,12 +75,12 @@ const AdminNavbar = () => {
               >
                 Create Course
               </button>
-              <button
+              {/* <button
                 onClick={() => handleNavigation("/mypurchases")}
                 className="text-black"
               >
                 Purchases
-              </button>
+              </button> */}
               <button
                 onClick={handleLogout}
                 className="bg-[#232322] px-4 py-2 rounded text-white font-semibold"
@@ -128,12 +128,12 @@ const AdminNavbar = () => {
               >
                 create Course
               </button>
-              <button
+              {/* <button
                 onClick={() => handleNavigation("/mypurchases")}
                 className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded"
               >
                 Purchases
-              </button>
+              </button> */}
               <button
                 onClick={handleLogout}
                 className="block w-full text-left bg-[#232322] px-4 py-2 rounded text-white font-semibold"
@@ -160,7 +160,11 @@ const AdminNavbar = () => {
         </div>
       )}
 
-      {isError && <p className="text-red-500 text-center">Logout Failed: {error.message}</p>}
+      {isError && (
+        <p className="text-red-500 text-center">
+          Logout Failed: {error.message}
+        </p>
+      )}
     </nav>
   );
 };
