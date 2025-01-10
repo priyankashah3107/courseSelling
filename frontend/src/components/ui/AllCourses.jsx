@@ -151,11 +151,11 @@
 
 //akjds
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import { formatCurrency } from "../../utils/formatCurrency.js";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRazorpay } from "react-razorpay";
@@ -181,6 +181,7 @@ const CourseCard = ({ course, onBuyNow }) => (
     <div className="relative overflow-hidden rounded-md">
       <img
         src={course.image}
+        // src={course.image.signedUrl || course.image.original}
         alt={course.title}
         className="w-full h-40 object-cover rounded-md transform group-hover:scale-105 transition-transform duration-300"
       />
@@ -209,8 +210,67 @@ const CourseCard = ({ course, onBuyNow }) => (
 const AllCourses = () => {
   const navigate = useNavigate();
   const { Razorpay } = useRazorpay();
-  const { data, loading, error } = useFetch("/api/v1/courses/getcourses");
+  const [data, setData] = useState([]); // State to store courses
+  const [isLoading, setLoading] = useState(true); // State to track loading status
+  const [error, setError] = useState(null); // State to track errors
+  const [file, setFile] = useState(null);
+  // const { data, loading, error } = useFetch("/api/v1/courses/getcourses");
 
+  // console.log("AllCourses data", data);
+
+  const getAllCourses = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("/api/v1/courses/getcourses");
+      const courses = res.data?.content || [];
+      console.log("Courses:", courses);
+      // Fetch signed URLs for each image dynamically
+
+      const signedUrls = await Promise.all(
+        courses.map(async (course) => {
+          if (course.image) {
+            const filename = course.image.split("/").pop();
+            // console.log("Filename", filename);
+            const key = `thumbnails/exampleUser/${filename}`;
+            console.log("Checking key in s3:", key);
+
+            try {
+              const signedUrlRes = await axios.post("/api/v1/get-signed-url", {
+                bucket: "imgprivate",
+                key: `thumbnails/exampleUser/${filename}`,
+              });
+              console.log("Signed Url Response:", signedUrlRes.data.url);
+              return { ...course, image: signedUrlRes.data.url };
+            } catch (error) {
+              console.log(
+                `Error fetching signed Url for image: ${course.image}`
+              );
+              // return {
+              //   ...course,
+              //   image: {
+              //     original: course.image,
+              //     signedUrl: signedUrls.data.url,
+              //   },
+              // }; // Return course without signed URL if it fails
+              return course;
+            }
+          }
+          return course; // // Return course as is if no image
+        })
+      );
+      setData(signedUrls);
+    } catch (error) {
+      console.error("Failed to load courses.");
+      setError("Failed to load courses.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllCourses();
+  }, []);
+  console.log("after setData", data);
   const handleBuyNow = () => {
     navigate("/buynow");
   };
@@ -285,16 +345,16 @@ const AllCourses = () => {
             size="large"
             className="font-bold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-[#26D0CE] to-[#1A2980] "
           />
-          {!loading && data?.content?.length > 0 && (
+          {!isLoading && data?.length > 0 && (
             <p className="mt-4 text-gray-400">Explore our courses</p>
           )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {loading ? (
+          {isLoading ? (
             [...Array(6)].map((_, index) => <CourseSkeleton key={index} />)
-          ) : data?.content?.length > 0 ? (
-            data.content.map((course, index) => (
+          ) : data?.length > 0 ? (
+            data.map((course, index) => (
               <CourseCard
                 key={course._id || index}
                 course={course}
@@ -320,3 +380,5 @@ const AllCourses = () => {
 };
 
 export default AllCourses;
+
+// There is a bug in the Razorpay and BE integration. When I click on the course ID and cancel the purchase, my course ID gets submitted to the database. Then, when I try to purchase the course again (which was not actually purchased), it shows an error saying, 'You have already purchased the course.' This issue needs to be fixed."

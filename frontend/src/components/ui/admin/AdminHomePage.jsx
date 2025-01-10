@@ -219,7 +219,7 @@ const AdminHomePage = () => {
   const [error, setError] = useState(null); // State to track errors
   const [file, setFile] = useState(null);
 
-  const getAllCourses = async () => {
+  const getAdminAllCourses = async () => {
     try {
       const res = await axios.get("/api/v1/courses/courseadmin", {
         withCredentials: true,
@@ -267,7 +267,7 @@ const AdminHomePage = () => {
 
   // Use useEffect to fetch courses when the component mounts
   useEffect(() => {
-    getAllCourses();
+    getAdminAllCourses();
   }, []); // Empty dependency array ensures this runs once
 
   const navigate = useNavigate();
