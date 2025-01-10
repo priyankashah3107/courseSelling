@@ -386,7 +386,6 @@
 // };
 
 // export default CreateCourse;
-
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -404,7 +403,6 @@ function CreateCourse() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
 
   const categories = [
     "Computer Science",
@@ -416,7 +414,6 @@ function CreateCourse() {
     "Data Structure and Algorithms",
   ];
 
-  // Replace with actual user details in your application
   const userDetails = { username: "exampleUser" };
 
   const handleFileChange = (event) => {
@@ -437,7 +434,6 @@ function CreateCourse() {
       [id]: value,
     }));
     setError(null);
-    setSuccessMessage(null);
   };
 
   const handleThumbnailUpload = async (putObjectParams) => {
@@ -448,8 +444,6 @@ function CreateCourse() {
       );
 
       const { presignedUrl } = signedUrlResponse;
-
-      console.log("Presigned URL Response:", signedUrlResponse);
 
       await axios.put(presignedUrl, file, {
         headers: { "Content-Type": file.type },
@@ -478,7 +472,8 @@ function CreateCourse() {
       if (file) {
         const putObjectParams = {
           bucket: "imgprivate",
-          key: `thumbnails/${userDetails.username}/${file.name}`,
+          // key: `thumbnails/${userDetails.username}/${file.name}`,
+          key: `thumbnails/${userDetails.username}/${Date.now()}-${file.name}`,
           contentType: file.type,
         };
         thumbnailUrl = await handleThumbnailUpload(putObjectParams);
@@ -489,16 +484,7 @@ function CreateCourse() {
         thumbnail: thumbnailUrl,
       });
 
-      console.log("Response is", response.data);
-
-      setSuccessMessage("Course created successfully!");
-      console.log("Course created:", response.data);
-      console.error("Error response data:", err.response.data);
-
-      setTimeout(() => {
-        navigate("/mycourses");
-      }, 1000);
-
+      toast.success("Course created successfully!");
       setCourseData({
         title: "",
         description: "",
@@ -507,11 +493,17 @@ function CreateCourse() {
         category: "",
       });
       setFile(null);
+
+      setTimeout(() => {
+        navigate("/admin");
+      }, 1000);
     } catch (err) {
       console.error("Error creating course:", err);
-      // setError("Failed to create course. Please try again.")
-      // setError(err.message);
-      toast.error(err.message);
+      setError(
+        err.response?.data?.message ||
+          "Failed to create course. Please try again."
+      );
+      toast.error(err.response?.data?.message || "Failed to create course.");
     } finally {
       setLoading(false);
     }
@@ -527,12 +519,6 @@ function CreateCourse() {
         {error && (
           <div className="p-3 mb-4 text-sm text-red-500 bg-red-100 border border-red-400 rounded">
             {error}
-          </div>
-        )}
-
-        {successMessage && (
-          <div className="p-3 mb-4 text-sm text-green-500 bg-green-100 border border-green-400 rounded">
-            {successMessage}
           </div>
         )}
 

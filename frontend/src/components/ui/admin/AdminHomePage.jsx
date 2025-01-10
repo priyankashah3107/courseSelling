@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { formatCurrency } from "../../../utils/formatCurrency.js";
 import toast from "react-hot-toast";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 // const getAllCourses = async () => {
 //   try {
@@ -227,19 +228,21 @@ const AdminHomePage = () => {
       const courses = res.data?.content || [];
       console.log("Courses:", courses);
 
-      // Fetch signed URLs for each image if it exists
+      // Fetch signed URLs for each image dynamically
       const signedUrls = await Promise.all(
         courses.map(async (course) => {
           if (course.image) {
+            const filename = course.image.split("/").pop(); // fix for extrating the file name
+            const key = `thumbnails/exampleUser/${filename}`;
+            console.log("Checking key in S3:", key);
+
             try {
               const signedUrlRes = await axios.post("/api/v1/get-signed-url", {
                 bucket: "imgprivate",
-                key: `thumbnails/exampleUser/WhatsApp Image 2024-01-29 at 6.01.13 PM.jpeg`,
-
-                // key: `thumbnails/exampleUser/what`,
+                key: `thumbnails/exampleUser/${filename}`, // Dynamically use the extracted filename
               });
 
-              console.log("Signed URL Response:", signedUrlRes.data);
+              console.log("Signed URL Response:", signedUrlRes.data.url);
               return { ...course, image: signedUrlRes.data.url };
             } catch (urlError) {
               console.error(
