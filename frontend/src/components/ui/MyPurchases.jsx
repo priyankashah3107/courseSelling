@@ -204,10 +204,10 @@ const MyPurchases = () => {
       });
       // console.log("Response from GET /api/v1/purchased/purchasedcourses:", res);
       const courses = res.data?.userPurchasedList || [];
-      console.log("Courses:", res.data?.userPurchasedList);
+      // console.log("Courses:", res.data?.userPurchasedList);
+      console.log("Courses:", courses);
 
-
-      // Debugging 
+      // Debugging
       // const b = res.data?.userPurchasedList.map((courses) => {
       //   const abc = courses.courseId;
       //   console.log("Abc", abc?.image);
@@ -220,7 +220,7 @@ const MyPurchases = () => {
 
       // Fetch signed URLs for each image dynamically
       const signedUrls = await Promise.all(
-        res.data?.userPurchasedList.map(async (course) => {
+        courses.map(async (course) => {
           if (course?.courseId?.image) {
             const filename = course?.courseId?.image.split("/").pop();
             const key = `thumbnails/exampleUser/${filename}`;
@@ -232,7 +232,13 @@ const MyPurchases = () => {
                 key: `thumbnails/exampleUser/${filename}`,
               });
               console.log("Signed Url Response:", signedUrlRes.data?.url);
-              return { ...course, image: signedUrlRes.data?.url };
+              return {
+                ...course,
+                courseId: {
+                  ...course?.courseId,
+                  image: signedUrlRes.data?.url,
+                },
+              };
             } catch (error) {
               console.log(
                 `Error fetching signed URL for image: ${course.image}`,
@@ -277,7 +283,8 @@ const MyPurchases = () => {
   //   getAllMyPurchasesCourse();
   // }, []);
   const handleSubContent = () => {
-    navigate("/subcontent");
+    // navigate("/subcontent");
+    navigate("/mypurchases");
   };
 
   if (error) {
@@ -301,7 +308,7 @@ const MyPurchases = () => {
             size="large"
             className="font-bold text-2xl sm:text-3xl bg-clip-text text-transparent bg-gradient-to-r from-[#26D0CE] to-[#1A2980]"
           />
-          {!isLoading && data?.userPurchasedList?.length > 0 && (
+          {!isLoading && data?.length > 0 && (
             <p className="mt-4 text-gray-400">
               {/* Explore our selection of {data.content.length} courses */}
               {/* Explore our courses */}
@@ -312,20 +319,20 @@ const MyPurchases = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {isLoading ? (
             [...Array(6)].map((_, index) => <PurchasesSkeleton key={index} />)
-          ) : data?.userPurchasedList?.courseId.length > 0 ? (
-            data?.userPurchasedList?.courseId.map((purchase, index) => {
+          ) : data?.length > 0 ? (
+            data?.map((purchase, index) => {
               // console.log("Coursesss", course)
-              const courseDetails = purchase.courseId;
-              console.log("CourseDetails from MyPurchases", courseDetails);
+              // const courseDetails = purchase.courseId;
+              // console.log("CourseDetails from MyPurchases", courseDetails);
 
-              if (!courseDetails) {
+              if (!purchase?.courseId) {
                 return null;
               }
               return (
                 <PurchaseCard
                   key={purchase._id || index}
-                  purchasedCourses={courseDetails}
-                  purchase={purchase}
+                  purchasedCourses={purchase?.courseId}
+                  purchase={purchase?.courseId}
                   onBuyNow={handleSubContent}
                 />
               );
