@@ -273,7 +273,7 @@ const AdminHomePage = () => {
   const navigate = useNavigate();
   const { data, isError, isLoading } = useQuery({
     queryKey: ["allCourses"],
-    queryFn: getAllCourses,
+    queryFn: getAdminAllCourses,
   });
 
   // patch request to update the course

@@ -236,7 +236,7 @@ const UpdateCourse = () => {
             />
           </label>
 
-          <label className="flex flex-col">
+          {/* <label className="flex flex-col">
             Image
             <input
               name="image"
@@ -246,7 +246,7 @@ const UpdateCourse = () => {
               onChange={handleChange}
               className="w-full bg-gray-100 p-3 rounded-md"
             />
-          </label>
+          </label> */}
 
           <label className="flex flex-col">
             Description
