@@ -289,12 +289,16 @@ const MyPurchases = () => {
 
   if (error) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center">
-        <div className="text-red-500 bg-red-100 p-4 rounded-lg shadow-lg">
-          <h3 className="text-lg font-semibold">Error Loading Courses</h3>
-          <p className="mt-1">{error}</p>
+      <>
+        <div className="min-h-screen bg-gradient-to-b from-primary to-gray-900">
+          <div className="min-h-[50vh] flex items-center justify-center">
+            <div className="text-red-500 bg-red-100 p-4 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold">No Purchase Available</h3>
+              <p className="mt-1">{error}</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
