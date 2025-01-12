@@ -5,7 +5,7 @@ import React from "react";
 const fetchProducts = async () => {
   try {
     const res = await axios.get("https://fakestoreapi.com/products");
-    console.log(res.data);
+    // console.log(res.data);
     return res.data;
   } catch (error) {
     console.log("error in FetchProducts", error);

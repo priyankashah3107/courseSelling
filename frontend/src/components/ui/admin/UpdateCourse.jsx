@@ -125,7 +125,7 @@ const fetchCourseDetails = async (id) => {
     const res = await axios.get(`/api/v1/courses/particulatcourse/${id}`, {
       withCredentials: true,
     });
-    console.log("fetchCourseDetails from UpdateCourse Details", res);
+    // console.log("fetchCourseDetails from UpdateCourse Details", res);
     return res.data;
   } catch (error) {
     console.log("Error while fetching the FetchCourseDeatils", error);
@@ -175,7 +175,7 @@ const UpdateCourse = () => {
           price,
           category,
         });
-        console.log("Particular Course from AdminHome Page", res);
+        // console.log("Particular Course from AdminHome Page", res);
         return res.data;
       } catch (error) {
         console.log("error to update the Course", error);
@@ -194,7 +194,7 @@ const UpdateCourse = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Updated Course Data", formData);
+    // console.log("Updated Course Data", formData);
     mutate(formData);
     navigate("/admin");
 

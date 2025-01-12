@@ -23,7 +23,7 @@ const LoginPage = () => {
        const res = await axios.post("/api/v1/auth/login", 
          formData
        );
-       console.log("Login data from LoginPage", formData)
+      //  console.log("Login data from LoginPage", formData)
        return res.data
      } catch (error) {
       console.log("Error while login to the profile", error)
@@ -52,7 +52,7 @@ const LoginPage = () => {
 			if(!res.ok) {
 			  throw new Error(data.error || "Something went wrong");
 			}
-			console.log("AuthUser is here", data);
+			// console.log("AuthUser is here", data);
 			return data;
 		  } catch (error) {
 			return null
@@ -69,7 +69,7 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
-    console.log("Login data:", formData);
+    // console.log("Login data:", formData);
     mutate(formData)
   };
 

@@ -226,7 +226,7 @@ const AdminHomePage = () => {
       });
 
       const courses = res.data?.content || [];
-      console.log("Courses:", courses);
+      // console.log("Courses:", courses);
 
       // Fetch signed URLs for each image dynamically
       const signedUrls = await Promise.all(
@@ -234,7 +234,7 @@ const AdminHomePage = () => {
           if (course.image) {
             const filename = course.image.split("/").pop(); // fix for extrating the file name
             const key = `thumbnails/exampleUser/${filename}`;
-            console.log("Checking key in S3:", key);
+            // console.log("Checking key in S3:", key);
 
             try {
               const signedUrlRes = await axios.post("/api/v1/get-signed-url", {
@@ -242,7 +242,7 @@ const AdminHomePage = () => {
                 key: `thumbnails/exampleUser/${filename}`, // Dynamically use the extracted filename
               });
 
-              console.log("Signed URL Response:", signedUrlRes.data.url);
+              // console.log("Signed URL Response:", signedUrlRes.data.url);
               return { ...course, image: signedUrlRes.data.url };
             } catch (urlError) {
               console.error(
@@ -287,7 +287,7 @@ const AdminHomePage = () => {
           price,
           category,
         });
-        console.log("Particular Course from AdminHome Page", res);
+        // console.log("Particular Course from AdminHome Page", res);
         return res.data;
       } catch (error) {
         console.log("error to update the Course", error);
@@ -381,7 +381,7 @@ const AdminHomePage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {courses.map((val, index) => {
-              console.log("return value", val);
+              // console.log("return value", val);
 
               return (
                 <>
