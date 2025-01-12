@@ -14,9 +14,13 @@ import { protectRoute_SECRET_TOKEN } from "./middlewars/protectRoute.js";
 import { getPurchasedCourseUserById } from "./controllers/purchase.controllers.js";
 import buyDeatils from "../backend/routes/buydetails.routes.js";
 import signedUrl from "../backend/routes/signedurl.routes.js";
+import path from "path";
 const app = express();
 
 const PORT = env_Vars.PORT;
+
+const __dirname = path.resolve();
+
 // app.use(cors());
 app.use(
   cors({
@@ -60,6 +64,14 @@ app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/viewbuy", buyDeatils);
 
 app.use("/api/v1", signedUrl);
+
+if (env_Vars.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`App is Running on http://localhost:${PORT}`);

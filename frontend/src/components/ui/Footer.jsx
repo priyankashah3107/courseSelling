@@ -1,35 +1,35 @@
-import React from 'react';
+import React from "react";
 
 const Footer = () => {
   // Define an array of objects for each section in the footer
   const footerSections = [
     {
-      title: 'About',
+      title: "About",
       links: [
-        { name: 'About Us', url: '/about-us' },
-        { name: 'Our Courses', url: '/courses' },
-        { name: 'Blog', url: '/blog' },
-        { name: 'Contact Us', url: '/contact' }
-      ]
+        { name: "About Us", url: "/about-us" },
+        { name: "Our Courses", url: "/courses" },
+        { name: "Blog", url: "/blog" },
+        { name: "Contact Us", url: "/contact" },
+      ],
     },
     {
-      title: 'Resources',
+      title: "Resources",
       links: [
-        { name: 'FAQ', url: '/faq' },
-        { name: 'Terms of Service', url: '/terms' },
-        { name: 'Privacy Policy', url: '/privacy' },
-        { name: 'Affiliate Program', url: '/affiliate' }
-      ]
+        { name: "FAQ", url: "/faq" },
+        { name: "Terms of Service", url: "/terms" },
+        { name: "Privacy Policy", url: "/privacy" },
+        { name: "Affiliate Program", url: "/affiliate" },
+      ],
     },
     {
-      title: 'Follow Us',
+      title: "Follow Us",
       links: [
-        { name: 'Facebook', url: 'https://facebook.com', external: true },
-        { name: 'Twitter', url: 'https://twitter.com', external: true },
-        { name: 'Instagram', url: 'https://instagram.com', external: true },
-        { name: 'LinkedIn', url: 'https://linkedin.com', external: true }
-      ]
-    }
+        { name: "Facebook", url: "https://facebook.com", external: true },
+        { name: "Twitter", url: "https://twitter.com", external: true },
+        { name: "Instagram", url: "https://instagram.com", external: true },
+        { name: "LinkedIn", url: "https://linkedin.com", external: true },
+      ],
+    },
   ];
 
   return (
@@ -79,7 +79,7 @@ const Footer = () => {
 
         {/* Footer Bottom Section */}
         <div className="text-center mt-8">
-          <p className="text-sm">&copy; 2025 Your Company Name. All Rights Reserved.</p>
+          <p className="text-sm">&copy; 2025 TechPoint. All Rights Reserved.</p>
         </div>
       </div>
     </footer>
