@@ -30,7 +30,7 @@ const AdminSignupPage  = () => {
           password, 
           state
         }); 
-				console.log("Data from the SignupPage", res);
+				// console.log("Data from the SignupPage", res);
 				return res.data;
 			} catch (error) {
 				console.log("Error on creating the Profile", error);
@@ -60,7 +60,7 @@ const AdminSignupPage  = () => {
 			if(!res.ok) {
 			  throw new Error(data.error || "Something went wrong");
 			}
-			console.log("AuthAdmin is here", data);
+			// console.log("AuthAdmin is here", data);
 			return data;
 		  } catch (error) {
 			return null
@@ -77,7 +77,7 @@ const AdminSignupPage  = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		// Handle signup logic here
-		console.log("Signup data:", formData);
+		// console.log("Signup data:", formData);
 		mutate(formData);
 	};
 

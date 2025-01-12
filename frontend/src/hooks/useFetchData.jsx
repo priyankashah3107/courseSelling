@@ -6,7 +6,7 @@ const fetchData = async (url) => {
   if (!url) return;
   try {
     const res = await axios.get(url);
-    console.log("FetchData from React Query", res.data);
+    // console.log("FetchData from React Query", res.data);
     return res.data;
   } catch (error) {
     console.log("Error to fetch the data", error);

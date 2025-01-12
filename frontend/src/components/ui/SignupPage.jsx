@@ -29,7 +29,7 @@ const SignupPage = () => {
           password, 
           role
         }); 
-				console.log("Data from the SignupPage", res);
+				// console.log("Data from the SignupPage", res);
 				return res.data;
 			} catch (error) {
 				console.log("Error on creating the Profile", error);
@@ -59,7 +59,7 @@ const SignupPage = () => {
 			if(!res.ok) {
 			  throw new Error(data.error || "Something went wrong");
 			}
-			console.log("AuthUser is here", data);
+			// console.log("AuthUser is here", data);
 			return data;
 		  } catch (error) {
 			return null
@@ -76,7 +76,7 @@ const SignupPage = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		// Handle signup logic here
-		console.log("Signup data:", formData);
+		// console.log("Signup data:", formData);
 		mutate(formData);
 	};
 

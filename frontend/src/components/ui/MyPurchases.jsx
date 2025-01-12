@@ -205,7 +205,7 @@ const MyPurchases = () => {
       // console.log("Response from GET /api/v1/purchased/purchasedcourses:", res);
       const courses = res.data?.userPurchasedList || [];
       // console.log("Courses:", res.data?.userPurchasedList);
-      console.log("Courses:", courses);
+      // console.log("Courses:", courses);
 
       // Debugging
       // const b = res.data?.userPurchasedList.map((courses) => {
@@ -224,14 +224,14 @@ const MyPurchases = () => {
           if (course?.courseId?.image) {
             const filename = course?.courseId?.image.split("/").pop();
             const key = `thumbnails/exampleUser/${filename}`;
-            console.log("Checking key in s3:", key);
+            // console.log("Checking key in s3:", key);
 
             try {
               const signedUrlRes = await axios.post("/api/v1/get-signed-url", {
                 bucket: "imgprivate",
                 key: `thumbnails/exampleUser/${filename}`,
               });
-              console.log("Signed Url Response:", signedUrlRes.data?.url);
+              // console.log("Signed Url Response:", signedUrlRes.data?.url);
               return {
                 ...course,
                 courseId: {
@@ -252,7 +252,7 @@ const MyPurchases = () => {
       );
 
       setData(signedUrls);
-      console.log("data is:", data);
+      // console.log("data is:", data);
     } catch (error) {
       console.error("Failed to load courses.", error);
       setError("Failed to load courses.");
